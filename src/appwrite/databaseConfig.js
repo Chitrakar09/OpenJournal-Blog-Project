@@ -30,6 +30,7 @@ export class DatabaseService {
       );
     } catch (error) {
       console.log("Appwrite service :: createPost :: error", error);
+      return error
     }
   }
 
@@ -51,6 +52,7 @@ export class DatabaseService {
       );
     } catch (error) {
       console.log("Appwrite service :: updatePost :: error", error);
+      return error
     }
   }
 

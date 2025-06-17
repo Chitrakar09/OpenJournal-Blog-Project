@@ -39,6 +39,7 @@ function Form({ use = "login" }) {
     }
       loginFunction(data);
   }
+
     // for signup handling
     else if (use.toLowerCase() === "signup") {
       //async signup function
@@ -46,7 +47,7 @@ function Form({ use = "login" }) {
         setError("");
         console.log("data from signup", data);
         try {
-          const session = await authService.createAccount({email: data.email, password: data.password});
+          const session = await authService.createAccount({email: data.email, password: data.password,userId:data.name});
           if (session) {
             const userData = await authService.getUser();
             if (userData) dispatch(setLogin(userData));
@@ -150,7 +151,6 @@ function Form({ use = "login" }) {
             bgColor="bg-[#14213d]"
             hoverColor="hover:bg-[#1a2b4a]"
             activeColor="active:bg-[#0f1b2e]"
-            authFunction={checkUse}
           />
         )}
 

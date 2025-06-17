@@ -75,7 +75,7 @@ function Post() {
             </div></div>
     ) : (
         <Container>
-            <p className="text-white text-5xl"></p>
+            <p className="text-white text-5xl">Post not found</p>
         </Container>
     )
 }

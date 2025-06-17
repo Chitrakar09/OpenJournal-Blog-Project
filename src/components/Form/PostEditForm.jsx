@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { Button, SelectComponent, RTE, InputField } from '../index'
 function PostEditForm({ post }) {
+    const [ error, setError ] = useState(null);
     const [ previewUrl, setPreviewUrl ] = useState(null);
     const [ postId, setPostId ] = useState(null);
     const navigate = useNavigate();
@@ -28,43 +29,81 @@ function PostEditForm({ post }) {
         if (post) {
             //to update image file in the bucket
             console.log(data.image)
-            const updatedImgId = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
+            try {
+                const updatedImgId = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
+                //if new uploaded, then delete the previous one
+                if (updatedImgId) databaseService.deleteFile(post.imageId);
 
-            //if new uploaded, then delete the previous one
-            if (updatedImgId) databaseService.deleteFile(post.imageId);
+                try {
+                    //update the database
+                    const updatedPost = await databaseService.updatePost(post.$id, { ...data, imageId: updatedImgId ? updatedImgId.$id : null });
 
-            //update the database
-            const updatedPost = await databaseService.updatePost(post.$id, { ...data, imageId: updatedImgId ? updatedImgId.$id : null });
+                    //navigate to the post page
+                    if (updatedPost) navigate(`/post/${updatedPost.$id}`);
+                } catch (error) {
+                    console.error("Error updating post:", error);
+                    setError(error);
+                }
+            }
+            catch (error) {
+                console.log("error uploading image", error)
+                setError(error);
+                return;
 
-            //navigate to the post page
-            if (updatedPost) navigate(`/post/${updatedPost.$id}`);
+            }
+
         }
         // create post
         else {
             // upload image file to the bucket
             console.log(data.image.length)
+
             // if image is uploaded, then upload the image file to the bucket
             if (data.image && data.image.length !== 0) {
-                const img = data.image[ 0 ] ? databaseService.uploadFile(data.image[ 0 ]) : null;
 
-                //if uploaded, create post
-                if (img) {
-                    const imgId = img.$id;
-                    data.imageId = imgId; //dynamically added property for imageId property in database.
-                    const addedPost = databaseService.createPost({ ...data, userId: userData.$id,postId: postId });
-                    if (addedPost) {
-                        navigate(`/post/${addedPost.$id}`);
+                try {
+                    const img = data.image[ 0 ] ? databaseService.uploadFile(data.image[ 0 ]) : null;
+                    //if uploaded, create post
+                    if (img) {
+                        const imgId = img.$id;
+                        data.imageId = imgId; //dynamically added property for imageId property in database.
+                        try {
+                            const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, postId: postId });
+                            if (addedPost) {
+                                navigate(`/post/${addedPost.$id}`);
+                            }
+                        } catch (error) {
+                            console.error("Error creating post:", error);
+                            setError(error);
+                        }
+
                     }
+
+                } catch (error) {
+
+                    console.log("error uploading image", error)
+                    setError(error);
+                    return;
+
                 }
+
+
+
             }
             // if no image is uploaded, create post without image
             else if (data.image && data.image.length === 0) {
                 // if no image is uploaded, create post without image
-                const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null, postId: postId });
+                try {
+                    const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null, postId: postId });
                 if (addedPost) {
                     console.log(addedPost)
                     navigate(`/post/${addedPost.$id}`);
                 }
+                } catch (error) {
+                    console.error("Error creating post:", error);
+                    setError(error)
+                }
+                
             }
         }
     }
@@ -114,6 +153,8 @@ function PostEditForm({ post }) {
         >
             <h2 className="text-2xl font-bold mb-6 text-center">Create a New Post</h2>
 
+            {error && <h1 className='text-lg font-bold mb-6 text-center text-red-500'>{error}</h1>}
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
                 {/* container 1 */}
@@ -154,9 +195,11 @@ function PostEditForm({ post }) {
             </div>
 
             {/* Button */}
-            <Button text={post ? "Update" : "Post"} type='submit' use='postSubmit' bgColor='bg-[#fca311]' hoverColor='hover:bg-[#e5940c]' activeColor='active:bg-[#cf8608]' className='mt-5 h-12 w-full' postSubmit={postSubmit} />
+            <Button text={post ? "Update" : "Post"} type='submit' use='postSubmit' bgColor='bg-[#fca311]' hoverColor='hover:bg-[#e5940c]' activeColor='active:bg-[#cf8608]' className='mt-5 h-12 w-full' />
         </form>
     )
 }
 
 export default PostEditForm
+
+//TODO recheck and handle same postid issue

@@ -20,10 +20,6 @@ function Button({
 
   //button functions
 
-  // Signup function
-
-  // Login function
-
   // Logout function
   const logoutBtn = () => {
     authService.logout().
@@ -32,7 +28,6 @@ function Button({
 
   // Login button used to navigate to login page
   const loginBtn = () => {
-    console.log("hello")
     navigate("/login") // redirects to login page on click if the use is login
   }
 
@@ -51,11 +46,11 @@ function Button({
     }
     //signup and login
     else if (use.toLowerCase() === "signup" || use.toLowerCase() == "login") {
-      props.authFunction(); // this is the function passed from Form.jsx
+      return null // does nothing and returns to form
     }
     //post
     else if (use.toLowerCase() === "postsubmit") {
-      props.postSubmit(); // this is the function passed from PostEditForm.jsx
+      return null; // does nothing and returns to form
     }
   };
 

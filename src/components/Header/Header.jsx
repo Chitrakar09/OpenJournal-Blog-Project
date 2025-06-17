@@ -54,7 +54,7 @@ function Header() {
             />):
           (
             
-            (location.pathname==="/")?(
+            (location.pathname==="/home")?(
             <Button
               text="Login"
               type="submit"

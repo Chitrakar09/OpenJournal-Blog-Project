@@ -16,9 +16,9 @@ export class AuthService{ //this is a class
     //since this is an async function, the next step only executes after the account is made.
     //returns a promise.
 
-    async createAccount({email,password}){
+    async createAccount({userId,email,password}){
         try {
-            const userAccount= await this.account.create(ID.unique(),email, password);
+            const userAccount= await this.account.create(userId,email, password);
             if (userAccount) {
                 //Call another method to login directly
                 return this.login({email,password});
