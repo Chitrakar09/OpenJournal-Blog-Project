@@ -17,7 +17,7 @@ const router = createBrowserRouter(
       <Route path="/signup" element={<Protected requireLogin={false}><Signup /></Protected>} />
       <Route path="/addPost" element={<Protected requireLogin><AddPost /></Protected>} />
       <Route path="/allPost" element={<Protected requireLogin><AllPost /></Protected>} />
-      <Route path="/editPost" element={<Protected requireLogin><EditPost /></Protected>} />
+      <Route path="/editPost/:postId" element={<Protected requireLogin><EditPost /></Protected>} />
       <Route path="/post/:postId" element={<Protected requireLogin><Post /></Protected>} />
     </Route>
   )

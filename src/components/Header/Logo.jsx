@@ -15,7 +15,7 @@ function Logo() {
             <FontAwesomeIcon icon={faBookOpen} style={{ color: "#fca311" }} />
           </p>
         ) : null}
-        <p>OpenJournal</p>
+        <p className="font-bold">OpenJournal</p>
       </div>
     </>
   );

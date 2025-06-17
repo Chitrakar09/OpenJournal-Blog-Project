@@ -24,11 +24,9 @@ function PostEditForm({ post }) {
     // function to execute after submit
     const postSubmit = async (data) => {
         if (!data) return;
-        console.log(data)
         //Update post
         if (post) {
             //to update image file in the bucket
-            console.log(data.image)
             try {
                 const updatedImgId = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
                 //if new uploaded, then delete the previous one
@@ -56,19 +54,20 @@ function PostEditForm({ post }) {
         // create post
         else {
             // upload image file to the bucket
-            console.log(data.image.length)
 
             // if image is uploaded, then upload the image file to the bucket
             if (data.image && data.image.length !== 0) {
-
+                console.log("data from post submit page",data)
+                console.log("image data from submit post page",data.image)
                 try {
-                    const img = data.image[ 0 ] ? databaseService.uploadFile(data.image[ 0 ]) : null;
+                    const img = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
                     //if uploaded, create post
                     if (img) {
-                        const imgId = img.$id;
-                        data.imageId = imgId; //dynamically added property for imageId property in database.
+                        console.log("result after image uploaded in bucket",img)
+                        const imgID=img.$id
                         try {
-                            const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, postId: postId });
+                            const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, postId: postId, imageId:imgID });
+                            console.log("what added post gives",addedPost)
                             if (addedPost) {
                                 navigate(`/post/${addedPost.$id}`);
                             }
@@ -95,15 +94,14 @@ function PostEditForm({ post }) {
                 // if no image is uploaded, create post without image
                 try {
                     const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null, postId: postId });
-                if (addedPost) {
-                    console.log(addedPost)
-                    navigate(`/post/${addedPost.$id}`);
-                }
+                    if (addedPost) {
+                        navigate(`/post/${addedPost.$id}`);
+                    }
                 } catch (error) {
                     console.error("Error creating post:", error);
                     setError(error)
                 }
-                
+
             }
         }
     }
@@ -153,7 +151,7 @@ function PostEditForm({ post }) {
         >
             <h2 className="text-2xl font-bold mb-6 text-center">Create a New Post</h2>
 
-            {error && <h1 className='text-lg font-bold mb-6 text-center text-red-500'>{error}</h1>}
+            {error && <h1 className='w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2'>{error}</h1>}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 

@@ -17,15 +17,43 @@ const BlogCard = ({ $id, imgId, title }) => {
       w-full
       h-full
       flex flex-col
+      items-center
+      justify-evenly
     "
       >
-        <img
-          src={databaseService.getFilePreview(imgId)}
-          alt={title}
-          className="w-full h-44 object-cover"
-        />
+        <div className="mt-6 w-full h-full md:h-64 bg-[#000000] flex items-center justify-center relative">
+                            {imgId ? (
+                                <img
+                                    src={imgId}
+                                    alt="Blog Post"
+                                    className="w-full h-full object-cover object-center rounded-xl shadow-md transition"
+                                />
+                            ) : (
+                                <div className="flex flex-col items-center px-6 justify-center w-full h-full text-[#e5e5e5]">
+                                    <svg
+                                        className="w-12 h-12 mb-2 text-[#fca311]"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M3 7v10a4 4 0 004 4h10a4 4 0 004-4V7a4 4 0 00-4-4H7a4 4 0 00-4 4z"
+                                        />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M8 11l4 4 4-4"
+                                        />
+                                    </svg>
+                                    <span className="text-sm">No image attached</span>
+                                </div>
+                            )}
+                        </div>
         <div className="p-4 flex-1 flex items-center">
-          <h2 className="text-base md:text-lg font-semibold text-[#fca311] leading-snug line-clamp-2">
+          <h2 className="text-base md:text-lg font-semibold text-[#fca311] leading-snug line-clamp-2 w-full">
             {title}
           </h2>
         </div>
@@ -36,8 +64,3 @@ const BlogCard = ({ $id, imgId, title }) => {
 
 export default BlogCard;
 
-/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-8 lg:px-16 py-6 place-items-center">
-          {sampleBlogs.map((blog, index) => (
-            <BlogCard key={index} title={blog.title} imageUrl={blog.imageUrl} />
-          ))}
-        </div> */

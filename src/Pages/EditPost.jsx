@@ -5,7 +5,7 @@ import { Container, PostEditForm } from '../components';
 
 function EditPost() {
     const [ posts, setPosts ] = useState(null);
-    const postId = useParams();
+    const {postId} = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {

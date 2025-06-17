@@ -18,7 +18,7 @@ function Header() {
 
       <header className="w-full bg-[#000000] text-[#FFFFFF] flex items-center justify-evenly h-10">
         {/* Logo section */}
-        <div className="logo w-1/3 justify-start ml-5 md:ml-10 text-sm md:text-2xl items-center">
+        <div className="logo w-1/3 justify-start ml-5 md:ml-10 text-sm md:text-xl items-center">
           <Link to="/home">
             <Logo />
           </Link>

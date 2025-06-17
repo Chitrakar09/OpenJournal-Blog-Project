@@ -15,6 +15,7 @@ export class DatabaseService {
   // create a document in database. database->collection->document(post). All data's are stored in document
   async createPost({ title,postId, content, imageId, status, userId }) {
     if(!imageId) imageId = null; // if imageId is not provided, set it to null
+    console.log("image id in create post",imageId);
     try {
       return await this.database.createDocument(
         config.databaseId,
@@ -104,7 +105,9 @@ export class DatabaseService {
   // upload file (in bucket)
   async uploadFile(file) {
     try {
-      return await this.bucket.createFile(config.buckedId, ID.unique(), file);
+      const uploadedFile=await this.bucket.createFile(config.buckedId, ID.unique(), file);
+      console.log("the return obtained from upload file in database service",uploadedFile)
+      return uploadedFile
     } catch (error) {
       console.log("Appwrite service :: uploadFile :: error", error);
     }
@@ -124,7 +127,7 @@ export class DatabaseService {
   // get file preview (of bucket)
   getFilePreview(fileId){
     try {
-        return this.bucket.getFilePreview(
+        return this.bucket.getFileView(
             config.buckedId,
             fileId
         )

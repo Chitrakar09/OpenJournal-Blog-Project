@@ -34,7 +34,6 @@ function Button({
 
   // According to the use of the button, respective function is called
   const checkUse = () => {
-    console.log("use", use);
     // no need to check for post, signup and login(not the navigation one) as its type is submit and automatically submits the form and done. 
     //navigated login
     if (use.toLowerCase() === "navlogin") {

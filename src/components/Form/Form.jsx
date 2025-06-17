@@ -55,7 +55,6 @@ function Form({ use = "login" }) {
           }
         } catch (error) {
           setError(error)
-          console.log("hi from form signup function",error)
         }
       } 
       signup(data);
