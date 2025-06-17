@@ -18,7 +18,7 @@ export class AuthService{ //this is a class
 
     async createAccount({email,password}){
         try {
-            const userAccount= await this.account.create(ID.unique,email, password);
+            const userAccount= await this.account.create(ID.unique(),email, password);
             if (userAccount) {
                 //Call another method to login directly
                 return this.login({email,password});

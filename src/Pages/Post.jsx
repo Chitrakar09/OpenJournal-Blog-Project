@@ -48,22 +48,24 @@ function Post() {
                     {/* Buttons */}
                     {isAuthor && (
                         <div className="flex gap-2">
-                        <Link to={"/editPost"}>
-                            <Button type="button" text="Edit" use="edit" bgColor="bg-[#fca311]" hoverColor="hover:bg-orange-400" className="text-black"/>
-                        </Link>
-                        <button onClick={()=>deletePost()} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition">Delete</button>
-                    </div>
+                            <Link to={"/editPost"}>
+                                <Button type="button" text="Edit" use="edit" bgColor="bg-[#fca311]" hoverColor="hover:bg-orange-400" className="text-black" />
+                            </Link>
+                            <button onClick={() => deletePost()} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition">Delete</button>
+                        </div>
                     )}
                 </div>
 
                 {/* Post Image */}
-                <div className="mt-8">
-                    <img
-                        src={databaseService.getFilePreview(Post.imageId)}
-                        alt="Blog Post"
-                        className="w-full h-64 object-cover object-center rounded-xl shadow-md"
-                    />
-                </div>
+                {Post.imageId ? (
+                    <div className="mt-8">
+                        <img
+                            src={databaseService.getFilePreview(Post.imageId)}
+                            alt="Blog Post"
+                            className="w-full h-64 object-cover object-center rounded-xl shadow-md"
+                        />
+                    </div>) : null
+                }
 
                 {/* Post Content */}
                 <div className="mt-8 space-y-4 text-lightGray leading-relaxed">

@@ -24,17 +24,27 @@ function RTE({ name, control, label, defaultValue = "" }) {
                         initialValue={defaultValue}
                         init={{
                             height: 500,
-                            menubar: true,
+                            menubar: true, // desktop menubar enabled
                             plugins: [
-                                "advlist", "anchor", "autolink", "charmap", "code", "codesample",
-                                "directionality", "fullscreen", "help", "image", "insertdatetime",
-                                "link", "lists", "media", "preview", "searchreplace", "table",
+                                "advlist", "anchor", "autolink", "charmap", "codesample",
+                                "directionality", "fullscreen", "help", "insertdatetime",
+                                "link", "lists", "preview", "searchreplace", "table",
                                 "visualblocks", "wordcount"
                             ],
                             toolbar:
-                                "undo redo | blocks | bold italic underline strikethrough | \
-                                 forecolor backcolor | link image media | alignleft aligncenter alignright alignjustify | \
-                                 bullist numlist outdent indent | removeformat | charmap anchor codesample | \ ltr rtl | visualblocks fullscreen | searchreplace insertdatetime table | help",
+                                "undo redo | blocks | bold italic underline strikethrough | " +
+                                "forecolor backcolor | link image media | alignleft aligncenter alignright alignjustify | " +
+                                "bullist numlist outdent indent | removeformat | charmap anchor | ltr rtl | visualblocks fullscreen | searchreplace insertdatetime table | help",
+                            mobile: {
+                                menubar: false, // mobile menubar disabled
+                                toolbar: [
+                                    'undo redo bold italic underline',
+                                    'bullist numlist',
+                                    'link'
+                                ]
+                                // Optionally, set a breakpoint (default is 768px)
+                                // breakpoint: 600
+                            },
                             content_style: `
                                 body {
                                 background-color: #ffffff;

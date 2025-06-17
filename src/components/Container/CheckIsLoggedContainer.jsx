@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { Loader } from '..index/'
+import { Loader } from '../index'
 
 /* 1. why this component was made?
     => It was made to protect certain pages or routes in your React app, so that:

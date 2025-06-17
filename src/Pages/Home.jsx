@@ -45,9 +45,7 @@ function Home() {
     // checks if logged in. if logged in then redirect to all post
     const isLoggedIn = useSelector((state) => state.Auth.status);
     const navigate = useNavigate();
-    return isLoggedIn ? (
-        navigate("/allPost")
-    ) : (
+    return (
         <>
             <div className="min-h-full w-full bg-gradient-to-b from-[#000000] via-[#14213d] to-[#1d2a50] text-white px-4 md:px-20 py-10">
                 {/* Hero Section */}
@@ -100,20 +98,20 @@ function Home() {
 
                 {/* contact us */}
                 <div className="mt-20">
-                    <h3 className="text-2xl font-semibold text-center mb-4">Follow us</h3>
-                    <div className="flex items-center space-x-5 justify-center text-2xl">
+                    <h3 className="text-xl font-semibold text-center mb-4">Contacts</h3>
+                    <div className="flex items-center space-x-5 justify-center text-xl">
                         {icons.map((featuredIcon) => (
                             <div key={featuredIcon.name}>
                                 <a
-                                href={featuredIcon.link}
-                                className="no-underline text-inherit hover:no-underline focus:outline-none hover:text-[#fca311]"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <FontAwesomeIcon icon={featuredIcon.icon} />
-                            </a>
+                                    href={featuredIcon.link}
+                                    className="no-underline text-inherit hover:no-underline focus:outline-none hover:text-[#fca311]"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <FontAwesomeIcon icon={featuredIcon.icon} />
+                                </a>
                             </div>
-                            
+
                         ))}
                     </div>
 

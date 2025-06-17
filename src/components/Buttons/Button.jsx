@@ -19,10 +19,15 @@ function Button({
   const navigate = useNavigate(); //this hook forcefully navigates to another page if called.
 
   //button functions
+
+  // Signup function
+
+  // Login function
+
   // Logout function
   const logoutBtn = () => {
     authService.logout().
-      then(() => { dispatch(logout) });
+      then(() => { dispatch(logout()) });
   }
 
   // Login button used to navigate to login page
@@ -34,23 +39,31 @@ function Button({
 
   // According to the use of the button, respective function is called
   const checkUse = () => {
+    console.log("use", use);
     // no need to check for post, signup and login(not the navigation one) as its type is submit and automatically submits the form and done. 
     //navigated login
     if (use.toLowerCase() === "navlogin") {
-      loginBtn(); 
+      loginBtn();
     }
     //logout
     else if (use.toLowerCase() === "logout") {
-      logoutBtn(); 
+      logoutBtn();
+    }
+    //signup and login
+    else if (use.toLowerCase() === "signup" || use.toLowerCase() == "login") {
+      props.authFunction(); // this is the function passed from Form.jsx
+    }
+    //post
+    else if (use.toLowerCase() === "postsubmit") {
+      props.postSubmit(); // this is the function passed from PostEditForm.jsx
     }
   };
 
   return (
     <button
       type={type}
-      onClick={()=>checkUse()}
-      className={`${bgColor} text-white font-semibold px-5 py-1 text-lg rounded-lg transition ${hoverColor} ${activeColor} ${className}`}
-      {...props}
+      onClick={() => checkUse()}
+      className={`${bgColor} text-white font-semibold px-5 py-1 text-lg text-center rounded-lg transition ${hoverColor} ${activeColor} ${className}`}
     >{text}</button>
   );
 }

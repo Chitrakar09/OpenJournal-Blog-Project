@@ -12,6 +12,7 @@ import RTE from "./RTE/RTE";
 import Container from "./Container/Container"
 import PostEditForm from "./Form/PostEditForm";
 import BlogCard from "./PreviewCard/PreviewCard";
+import Protected from "./Container/CheckIsLoggedContainer";
 
 export {
   Header,
@@ -27,5 +28,6 @@ export {
   RTE,
   Container,
   PostEditForm,
-  BlogCard
+  BlogCard,
+  Protected,
 };

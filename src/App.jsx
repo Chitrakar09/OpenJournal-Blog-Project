@@ -15,7 +15,6 @@ function App() {
   useEffect(() => {
     authService.getUser().then((userData) => {
       if (userData) {
-        console.log(userData)
         dispatch(login({ userData }));
       } else {
         dispatch(logout()); //if no value is given by get user then automatically logged out
@@ -24,7 +23,7 @@ function App() {
   }, [])
 
   // conditional rendering
-  return loading ? (<Container>
+  return loading ? (<Container className='justify-center'>
     <Loader></Loader>
   </Container>) : (
     <>

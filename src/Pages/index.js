@@ -5,5 +5,6 @@ import AllPost from './AllPost'
 import EditPost from './EditPost'
 import Home from './Home'
 import Post from './Post'
+import InitialPage from './InitialPage'
 
-export {LoginPage,Signup,AddPost,AllPost,EditPost,Home,Post};
+export {LoginPage,Signup,AddPost,AllPost,EditPost,Home,Post,InitialPage};

@@ -17,44 +17,47 @@ function Form({ use = "login" }) {
   } = useForm();
   const [ error, setError ] = useState("");
 
-  const checkUse = () => {
-
+  const checkUse = (data) => {
+    
     //for login handling
     if (use.toLowerCase() === "login") {
       //async login function
-      const login = async (data) => {
+      const loginFunction = async (data) => {
         setError("");
         try {
           const session = await authService.login(data);
           if (session) {
-            const userData = authService.getUser();
+            const userData =await authService.getUser();
             if (userData) dispatch(setLogin(userData));
-            navigate("/allPost");
+            navigate("/");
           }
         } catch (error) {
           setError(error);
+          console.log("hi from form login function")
         }
-        //calling the function
-        login();
-      }
+       
     }
+      loginFunction(data);
+  }
     // for signup handling
     else if (use.toLowerCase() === "signup") {
       //async signup function
-      const signup= async(data)=>{
+      const signup = async (data) => {
         setError("");
+        console.log("data from signup", data);
         try {
-          const session= await authService.createAccount(data);
-          if(session){
-            const userData= authService.getUser();
-            if(userData) dispatch(setLogin(userData));
-            navigate("/allPost");
+          const session = await authService.createAccount({email: data.email, password: data.password});
+          if (session) {
+            const userData = await authService.getUser();
+            if (userData) dispatch(setLogin(userData));
+            navigate("/");
           }
         } catch (error) {
           setError(error)
+          console.log("hi from form signup function",error)
         }
-      }
-      signup();
+      } 
+      signup(data);
     }
   };
 
@@ -65,16 +68,21 @@ function Form({ use = "login" }) {
     */}
 
       <form
-        className=" w-full max-w-md mx-auto bg-[#e5e5e5] p-6 rounded-xl shadow flex flex-col items-center justify-center min-h-[300px] md:min-h-[400px] xl:h-full"
+        className=" w-full max-w-md mx-auto bg-[#e5e5e5] p-6 rounded-xl shadow flex flex-col items-center justify-evenly min-h-[300px] md:min-h-[400px] xl:h-full"
         onSubmit={handleSubmit(checkUse)}
       >
         {/* Logo section */}
         <Logo />
 
+        {/* title section */}
+        {use.toLowerCase() === "signup" ? (
+          <h1 className="text-2xl font-bold text-[#14213d] mb-4 w-full text-center">Sign Up</h1>) : (
+          <h1 className="text-2xl font-bold text-[#14213d] mb-4 w-full text-center">Login</h1>)}
+
         {/* error section */}
         {(error || errors?.email) && (
           <p className="w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2">
-            {error || errors?.email?.message}
+            {(error && error.message) ? error.message : String(error || errors?.email?.message)}
           </p>
         )}
 
@@ -142,6 +150,7 @@ function Form({ use = "login" }) {
             bgColor="bg-[#14213d]"
             hoverColor="hover:bg-[#1a2b4a]"
             activeColor="active:bg-[#0f1b2e]"
+            authFunction={checkUse}
           />
         )}
 

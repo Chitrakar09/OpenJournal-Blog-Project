@@ -22,11 +22,13 @@ function PostEditForm({ post }) {
 
     // function to execute after submit
     const postSubmit = async (data) => {
-
+        if (!data) return;
+        console.log(data)
         //Update post
         if (post) {
             //to update image file in the bucket
-            const updatedImgId = data.image[ 0 ] ? databaseService.uploadFile(data.image[ 0 ]) : null;
+            console.log(data.image)
+            const updatedImgId = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
 
             //if new uploaded, then delete the previous one
             if (updatedImgId) databaseService.deleteFile(post.imageId);
@@ -40,13 +42,29 @@ function PostEditForm({ post }) {
         // create post
         else {
             // upload image file to the bucket
-            const img = data.image[ 0 ] ? databaseService.uploadFile(data.image[ 0 ]) : null;
+            console.log(data.image.length)
+            // if image is uploaded, then upload the image file to the bucket
+            if (data.image && data.image.length !== 0) {
+                const img = data.image[ 0 ] ? databaseService.uploadFile(data.image[ 0 ]) : null;
 
-            //if uploaded, create post
-            if (img) {
-                const imgId = img.$id;
-                data.imageId = imgId; //dynamically added property for imageId property in database.
-                const addedPost = databaseService.createPost({ ...data, userId: userData.$id });
+                //if uploaded, create post
+                if (img) {
+                    const imgId = img.$id;
+                    data.imageId = imgId; //dynamically added property for imageId property in database.
+                    const addedPost = databaseService.createPost({ ...data, userId: userData.$id,postId: postId });
+                    if (addedPost) {
+                        navigate(`/post/${addedPost.$id}`);
+                    }
+                }
+            }
+            // if no image is uploaded, create post without image
+            else if (data.image && data.image.length === 0) {
+                // if no image is uploaded, create post without image
+                const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null, postId: postId });
+                if (addedPost) {
+                    console.log(addedPost)
+                    navigate(`/post/${addedPost.$id}`);
+                }
             }
         }
     }
@@ -92,14 +110,14 @@ function PostEditForm({ post }) {
     return (
         <form
             onSubmit={handleSubmit(postSubmit)}
-            className="bg-white text-[#14213d] p-6 rounded-2xl shadow-lg w-full max-w-full mx-auto mt-10"
+            className="bg-white text-[#14213d] p-6 rounded-2xl shadow-lg w-full max-w-full mx-auto"
         >
             <h2 className="text-2xl font-bold mb-6 text-center">Create a New Post</h2>
 
-            <diV className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
                 {/* container 1 */}
-                <div className="md:col-span-2">
+                <div className="md:col-span-2 md:border-r-2 pr-6 space-y-4">
                     {/* Title */}
                     <InputField label="Title" type='text' name="title" placeholder='Enter Title' {...register("title", { required: true })} />
 
@@ -124,7 +142,7 @@ function PostEditForm({ post }) {
                         name="image"
                         accept="image/png, image/jpg, image/jpeg, image/gif"
                         className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#fca311] file:text-white hover:file:bg-[#e18b0c]"
-                        {...register("image", { required: !post })}
+                        {...register("image", { required: false })}
                     />
                     {post || previewUrl && (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-1 max-h-44 overflow-y-auto">
@@ -133,10 +151,10 @@ function PostEditForm({ post }) {
                     )}
                 </div>
 
-            </diV>
+            </div>
 
             {/* Button */}
-            <Button text={post ? "Update" : "Post"} type='submit' use='postSubmit' bgColor='bg-[#fca311]' hoverColor='hover:bg-[#e5940c]' activeColor='active:bg-[#cf8608]' />
+            <Button text={post ? "Update" : "Post"} type='submit' use='postSubmit' bgColor='bg-[#fca311]' hoverColor='hover:bg-[#e5940c]' activeColor='active:bg-[#cf8608]' className='mt-5 h-12 w-full' postSubmit={postSubmit} />
         </form>
     )
 }

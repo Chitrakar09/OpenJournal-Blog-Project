@@ -14,6 +14,7 @@ export class DatabaseService {
 
   // create a document in database. database->collection->document(post). All data's are stored in document
   async createPost({ title,postId, content, imageId, status, userId }) {
+    if(!imageId) imageId = null; // if imageId is not provided, set it to null
     try {
       return await this.database.createDocument(
         config.databaseId,
@@ -34,6 +35,7 @@ export class DatabaseService {
 
   // update a document in database
   async updatePost(postId, { title, content, imageId, status, userId }) {
+    if(!imageId) imageId = null; // if imageId is not provided, set it to null
     try {
       return await this.database.updateDocument(
         config.databaseId,
