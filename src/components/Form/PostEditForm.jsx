@@ -3,12 +3,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import databaseService from '../../appwrite/databaseConfig'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { Button, SelectComponent, RTE, InputField } from '../index'
 function PostEditForm({ post }) {
     const [ error, setError ] = useState(null);
     const [ previewUrl, setPreviewUrl ] = useState(null);
     const [ postId, setPostId ] = useState(null);
+    const [ imageUrl, setImageUrl ] = useState(null);
+    const [ id, setId ] = useState(null);
     const navigate = useNavigate();
     const userData = useSelector((state) => state.Auth.userData);
     const { register, handleSubmit, watch, control, getValues } = useForm({
@@ -17,9 +19,43 @@ function PostEditForm({ post }) {
             id: post?.$id || '',
             content: post?.content || '',
             status: post?.status || 'active',
+            image: post?.imageId || null
         },
     });
     const watchedImage = watch("image");
+
+    useEffect(() => {
+        if (post) {
+
+            if (post.$id) setId(post.$id);
+
+            if (previewUrl) {
+                setImageUrl(previewUrl);
+            }
+
+            else if (post.imageId) {
+                console.log("this is the image id obtained from retrieved post", post.imageId)
+                const getImg = async () => {
+                    try {
+                        const url = databaseService.getFilePreview(post.imageId);
+                        console.log("this is the image url obtained from database", url)
+                        setImageUrl(url);
+                    } catch (error) {
+                        console.error("Error fetching image URL:", error);
+                        setError("Failed to load image.", error);
+                        // If there's an error fetching the image, set imageUrl to null
+                        setImageUrl(null);
+                    }
+                }
+                getImg();
+            }
+
+            else {
+                setImageUrl(null)
+            }
+        }
+
+    }, [ post, previewUrl ])
 
     // function to execute after submit
     const postSubmit = async (data) => {
@@ -57,17 +93,14 @@ function PostEditForm({ post }) {
 
             // if image is uploaded, then upload the image file to the bucket
             if (data.image && data.image.length !== 0) {
-                console.log("data from post submit page",data)
-                console.log("image data from submit post page",data.image)
                 try {
                     const img = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
                     //if uploaded, create post
                     if (img) {
-                        console.log("result after image uploaded in bucket",img)
-                        const imgID=img.$id
+                        const imgID = img.$id
+                        console.log("this is the sent image id:", imgID);
                         try {
-                            const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, postId: postId, imageId:imgID });
-                            console.log("what added post gives",addedPost)
+                            const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, postId: postId, imageId: imgID });
                             if (addedPost) {
                                 navigate(`/post/${addedPost.$id}`);
                             }
@@ -132,7 +165,7 @@ function PostEditForm({ post }) {
 
     // to generate a image url for live preview of the uploaded image
     useEffect(() => {
-        if (watchedImage && watchedImage.length > 0) {
+        if (watchedImage && watchedImage[ 0 ] instanceof File) {
             const file = watchedImage[ 0 ];
             const url = URL.createObjectURL(file);
             setPreviewUrl(url);
@@ -183,9 +216,9 @@ function PostEditForm({ post }) {
                         className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#fca311] file:text-white hover:file:bg-[#e18b0c]"
                         {...register("image", { required: false })}
                     />
-                    {post || previewUrl && (
+                    {imageUrl && (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-1 max-h-44 overflow-y-auto">
-                            <img src={post ? post.imageId : previewUrl} alt='Preview' className="rounded-lg object-cover object-center" />
+                            <img src={imageUrl} alt='Preview' className="rounded-lg object-cover object-center" />
                         </div>
                     )}
                 </div>
@@ -194,10 +227,33 @@ function PostEditForm({ post }) {
 
             {/* Button */}
             <Button text={post ? "Update" : "Post"} type='submit' use='postSubmit' bgColor='bg-[#fca311]' hoverColor='hover:bg-[#e5940c]' activeColor='active:bg-[#cf8608]' className='mt-5 h-12 w-full' />
+
+            {id ? (
+                <Link to={`/post/${id}`}>
+                    <Button
+                        text="Cancel"
+                        type="button"
+                        use="cancel"
+                        bgColor="bg-[#14213d]"
+                        hoverColor="hover:bg-[#1a2b4a]"
+                        activeColor="active:bg-[#0f1b2e]"
+                        className="mt-2 h-12 w-full text-white"
+                    />
+                </Link>) : (
+                <Link to={'/allPost'}>
+                    <Button
+                        text="Cancel"
+                        type="button"
+                        use="cancel"
+                        bgColor="bg-[#14213d]"
+                        hoverColor="hover:bg-[#1a2b4a]"
+                        activeColor="active:bg-[#0f1b2e]"
+                        className="mt-2 h-12 w-full text-white"
+                    />
+                </Link>
+            )}
         </form>
     )
 }
 
 export default PostEditForm
-
-//TODO recheck and handle same postid issue

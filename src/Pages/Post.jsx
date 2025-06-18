@@ -75,21 +75,33 @@ function Post() {
                             {isAuthor && (
                                 <div className="flex gap-2">
                                     <Link to={`/editPost/${Post.$id}`}>
-                                        <Button type="button" text="Edit" use="edit" bgColor="bg-[#fca311]" hoverColor="hover:bg-orange-400" className="text-black" />
+                                        <Button type="button" text="Edit" use="edit" bgColor="bg-[#fca311]" hoverColor="hover:bg-[#e5940c]" />
                                     </Link>
-                                    <button onClick={() => deletePost()} className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition">Delete</button>
+                                    <button onClick={() => deletePost()} className="bg-red-600 text-white text-lg px-4 py-1 font-bold rounded-lg hover:bg-red-800 transition">Delete</button>
                                 </div>
                             )}
                         </div>
 
                         {/* Image or Placeholder */}
-                        <div className="mt-6 w-full h-48 md:h-64 bg-[#000000] flex items-center justify-center relative">
+                        <div className="mt-6 w-auto h-48 md:h-64 bg-[#000000] flex items-center justify-center relative">
                             {url ? (
-                                <img
-                                    src={url}
-                                    alt="Blog Post"
-                                    className="w-full h-full object-contain object-center rounded-xl shadow-md transition"
-                                />
+                                <div className="relative w-full h-48 md:h-64 flex items-center justify-center group overflow-hidden rounded-sm shadow-md bg-[#000000] border-2 border-[#fca311]/30">
+                                    <img
+                                        src={url}
+                                        alt="Blog Post"
+                                        className="w-full h-full object-cover object-center md:object-top transition-transform duration-300 ease-in-out group-hover:scale-105"
+                                        loading="lazy"
+                                        style={{ background: "#e5e5e5" }}
+                                    />
+                                    {/* Optional: Click to view full image */}
+                                    <button
+                                        className="absolute bottom-2 right-2 bg-[#fca311] text-white px-3 py-1 rounded shadow hover:bg-[#14213d] hover:text-[#fca311] transition"
+                                        onClick={() => window.open(url, "_blank")}
+                                        type="button"
+                                    >
+                                        View Full Image
+                                    </button>
+                                </div>
                             ) : (
                                 <div className="flex flex-col items-center px-6 justify-center w-full h-full text-[#e5e5e5]">
                                     <svg

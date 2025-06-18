@@ -86,12 +86,17 @@ export class DatabaseService {
   }
 
   // get list of documents in database
-  async getAllPost(queries = Query.equal("status", ["active"])) {
+  async getAllPost(userId) {
     try {
       return await this.database.listDocuments(
         config.databaseId,
         config.collectionId,
-        [queries]
+        [
+          Query.and([
+            Query.equal("userId",[userId]),
+            Query.equal("status", ["active"])
+          ])
+        ]
       );
     } catch (error) {
       console.log("Appwrite service :: getAllPost :: error", error);
