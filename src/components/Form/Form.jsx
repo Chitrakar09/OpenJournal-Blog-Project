@@ -18,27 +18,33 @@ function Form({ use = "login" }) {
   const [ error, setError ] = useState("");
 
   const checkUse = (data) => {
-    
+
     //for login handling
     if (use.toLowerCase() === "login") {
       //async login function
       const loginFunction = async (data) => {
+        console.log(data);
         setError("");
         try {
           const session = await authService.login(data);
+          console.log(session)
           if (session) {
-            const userData =await authService.getUser();
-            if (userData) dispatch(setLogin(userData));
-            navigate("/");
-          }
+            await authService.getUser().then((userData) => {
+              console.log("form user data",userData)
+              if (userData) {
+                dispatch(setLogin(userData));
+                navigate("/");
+              }
+            })}
+
         } catch (error) {
           setError(error);
           console.log("hi from form login function")
         }
-       
-    }
+
+      }
       loginFunction(data);
-  }
+    }
 
     // for signup handling
     else if (use.toLowerCase() === "signup") {
@@ -47,7 +53,7 @@ function Form({ use = "login" }) {
         setError("");
         console.log("data from signup", data);
         try {
-          const session = await authService.createAccount({email: data.email, password: data.password,userId:data.name});
+          const session = await authService.createAccount({ email: data.email, password: data.password, userId: data.name });
           if (session) {
             const userData = await authService.getUser();
             if (userData) dispatch(setLogin(userData));
@@ -56,7 +62,7 @@ function Form({ use = "login" }) {
         } catch (error) {
           setError(error)
         }
-      } 
+      }
       signup(data);
     }
   };

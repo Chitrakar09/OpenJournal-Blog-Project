@@ -12,6 +12,7 @@ function Post() {
     const [ Post, setPost ] = useState(null);
     const [ loading, setLoading ] = useState(null);
     const [ url, setUrl ] = useState(null);
+    const [errorMsg, setErrorMsg] = useState("");
 
     // to check if its author or not
     const isAuthor = Post && userData ? Post.userId === userData.$id : false;
@@ -27,10 +28,12 @@ function Post() {
                     setPost(post);
                     setLoading(false);
                 }
-                else navigate("/allPost");
+                // else navigate("/allPost");
+                else setErrorMsg("No post found")
             })
         }
-        else navigate("/allPost");
+        // else navigate("/allPost");
+        else setErrorMsg("Post id not found")
         
     }, [ postId, navigate ])
 

@@ -4,23 +4,34 @@ import { login, logout } from './features/auth/authSlice';
 import { useEffect, useState } from 'react';
 import authService from './appwrite/auth';
 import { Header, Loader, Container } from './components';
-import config from './config/config';
 import { Outlet } from 'react-router';
 
 function App() {
   const [ loading, setLoading ] = useState(true);
   const dispatch = useDispatch();
 
+
   // on first load, checks if logged in or not
   useEffect(() => {
-    authService.getUser().then((userData) => {
-      if (userData) {
-        dispatch(login({ userData }));
-      } else {
-        dispatch(logout()); //if no value is given by get user then automatically logged out
+    const checkAuth = async () => {
+      try {
+        const userData=await authService.getUser();
+        console.log(userData);
+          if (userData) {
+            dispatch(login({ userData }));
+            setLoading(false);
+          } else {
+            dispatch(logout());
+            setLoading(false); //if no value is given by get user then automatically logged out
+          }
+
+      } catch (error) {
+        console.log("failure to authenticate",error);
+        dispatch(logout());
       }
-    }).finally(() => setLoading(false));
-  }, [])
+  }
+   checkAuth();
+}, [])
 
   // conditional rendering
   return loading ? (<Container className='justify-center'>

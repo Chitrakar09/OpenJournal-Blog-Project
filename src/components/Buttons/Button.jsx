@@ -23,7 +23,10 @@ function Button({
   // Logout function
   const logoutBtn = () => {
     authService.logout().
-      then(() => { dispatch(logout()) });
+      then(() => { 
+        dispatch(logout()); 
+        navigate("/");
+      });
   }
 
   // Login button used to navigate to login page

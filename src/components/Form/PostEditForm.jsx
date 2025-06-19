@@ -13,6 +13,7 @@ function PostEditForm({ post }) {
     const [ id, setId ] = useState(null);
     const navigate = useNavigate();
     const userData = useSelector((state) => state.Auth.userData);
+    console.log(userData)
     const { register, handleSubmit, watch, control, getValues } = useForm({
         defaultValues: {
             title: post?.title || '',
@@ -24,16 +25,18 @@ function PostEditForm({ post }) {
     });
     const watchedImage = watch("image");
 
+    // function for preview selected image and set post id
     useEffect(() => {
-        if (post) {
+
+        if (previewUrl) {
+            setImageUrl(previewUrl);
+        }
+
+        else if (post) {
 
             if (post.$id) setId(post.$id);
 
-            if (previewUrl) {
-                setImageUrl(previewUrl);
-            }
-
-            else if (post.imageId) {
+            if (post.imageId) {
                 console.log("this is the image id obtained from retrieved post", post.imageId)
                 const getImg = async () => {
                     try {
@@ -59,6 +62,8 @@ function PostEditForm({ post }) {
 
     // function to execute after submit
     const postSubmit = async (data) => {
+        console.log("clicked the post button");
+        console.log(data);
         if (!data) return;
         //Update post
         if (post) {
@@ -70,7 +75,7 @@ function PostEditForm({ post }) {
 
                 try {
                     //update the database
-                    const updatedPost = await databaseService.updatePost(post.$id, { ...data, imageId: updatedImgId ? updatedImgId.$id : null });
+                    const updatedPost = await databaseService.updatePost(post.$id, { ...data, imageId: updatedImgId ? updatedImgId.$id : post.imageId ? post.imageId : null });
 
                     //navigate to the post page
                     if (updatedPost) navigate(`/post/${updatedPost.$id}`);
@@ -100,8 +105,12 @@ function PostEditForm({ post }) {
                         const imgID = img.$id
                         console.log("this is the sent image id:", imgID);
                         try {
-                            const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, postId: postId, imageId: imgID });
+                            console.log(postId);
+                            console.log(userData);
+                            console.log(userData.$id);
+                            const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, postId: postId, imageId: imgID });
                             if (addedPost) {
+                                console.log("this is what create post returns from database",addedPost)
                                 navigate(`/post/${addedPost.$id}`);
                             }
                         } catch (error) {
@@ -123,10 +132,11 @@ function PostEditForm({ post }) {
 
             }
             // if no image is uploaded, create post without image
-            else if (data.image && data.image.length === 0) {
+            else  {
                 // if no image is uploaded, create post without image
+                console.log("reached here")
                 try {
-                    const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null, postId: postId });
+                    const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, imageId: null, postId: postId });
                     if (addedPost) {
                         navigate(`/post/${addedPost.$id}`);
                     }

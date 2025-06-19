@@ -16,6 +16,8 @@ export class DatabaseService {
   async createPost({ title,postId, content, imageId, status, userId }) {
     if(!imageId) imageId = null; // if imageId is not provided, set it to null
     console.log("image id in create post",imageId);
+    console.log("this is the post id in database",postId);
+    console.log("this is the userId in database",userId)
     try {
       return await this.database.createDocument(
         config.databaseId,
