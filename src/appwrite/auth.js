@@ -17,6 +17,7 @@ export class AuthService{ //this is a class
     //returns a promise.
 
     async createAccount({userId,email,password}){
+        console.log("userId in create account",userId);
         try {
             const userAccount= await this.account.create(userId,email, password);
             if (userAccount) {

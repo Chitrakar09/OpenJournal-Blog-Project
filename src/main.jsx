@@ -13,8 +13,8 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route path="" element={<InitialPage/>}></Route>
       <Route path="home" element={<Home />} />
-      <Route path="/login" element={<Protected requireLogin={false}><LoginPage /></Protected>} />
-      <Route path="/signup" element={<Protected requireLogin={false}><Signup /></Protected>} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/addPost" element={<Protected requireLogin><AddPost /></Protected>} />
       <Route path="/allPost" element={<Protected requireLogin><AllPost /></Protected>} />
       <Route path="/editPost/:postId" element={<Protected requireLogin><EditPost /></Protected>} />

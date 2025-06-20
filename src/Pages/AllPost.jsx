@@ -1,23 +1,24 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { BlogCard, Container, Loader } from "../components";
+import { BlogCard, Button, Container, Loader } from "../components";
 import databaseService from "../appwrite/databaseConfig";
+import { Link } from "react-router";
 
 function AllPost() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [ posts, setPosts ] = useState([]);
+  const [ loading, setLoading ] = useState(true);
 
   const userData = useSelector((state) => state.Auth.userData);
 
   useEffect(() => {
     console.log("userData changed:", userData);
-    
+
     // If userData is undefined, we're still loading auth
     if (userData === undefined) {
       setLoading(true);
       return;
     }
-    
+
     // If userData is empty array or null, user is not authenticated
     if (!userData || (Array.isArray(userData) && userData.length === 0)) {
       setLoading(false);
@@ -27,13 +28,13 @@ function AllPost() {
 
     // We have valid userData, fetch posts
     setLoading(true);
-    
+
     async function fetchPosts() {
       try {
         // Handle both array and object userData structures
         let userId;
         if (Array.isArray(userData)) {
-          userId = userData[0]?.userData?.$id || userData[0]?.$id;
+          userId = userData[ 0 ]?.userData?.$id || userData[ 0 ]?.$id;
         } else {
           userId = userData.userData?.$id || userData.$id;
         }
@@ -57,7 +58,7 @@ function AllPost() {
     }
 
     fetchPosts();
-  }, [userData]);
+  }, [ userData ]);
 
   // Show loader while userData is undefined (auth loading)
   if (userData === undefined) {
@@ -71,9 +72,9 @@ function AllPost() {
   }
 
   // Check if user is authenticated
-  const isAuthenticated = userData && 
-    ((Array.isArray(userData) && userData.length > 0) || 
-     (typeof userData === 'object' && userData !== null && !Array.isArray(userData)));
+  const isAuthenticated = userData &&
+    ((Array.isArray(userData) && userData.length > 0) ||
+      (typeof userData === 'object' && userData !== null && !Array.isArray(userData)));
 
   return (
     <Container>
@@ -81,7 +82,7 @@ function AllPost() {
         <h1 className="text-4xl font-bold text-[#14213d] text-center mb-8 tracking-tight">
           Latest <span className="text-[#fca311]">Posts</span>
         </h1>
-        
+
         {!isAuthenticated ? (
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
@@ -106,10 +107,20 @@ function AllPost() {
             ))}
           </div>
         ) : (
-          <div className="flex justify-center items-center h-64">
-            <h2 className="text-2xl text-[#14213d] font-semibold">
+          <div className="flex flex-col justify-center items-center h-64">
+            <h2 className="text-2xl text-[#14213d] font-semibold mb-4">
               No posts available.
             </h2>
+            <Link to={'/addPost'}>
+              <Button
+                text="Create a Post"
+                type="button"
+                use="createPost"
+                bgColor="bg-[#14213d]"
+                hoverColor="hover:bg-[#fca311]"
+                activeColor="active:bg-[#0f1b2e]"
+              />
+            </Link>
           </div>
         )}
       </div>

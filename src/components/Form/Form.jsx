@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import authService from "../../appwrite/auth";
 import { login as setLogin } from "../../features/auth/authSlice";
@@ -7,15 +7,42 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Button, InputField, Logo } from "../index";
 
+// Helper to make error messages user-friendly
+function getFriendlyError(error) {
+  if (!error) return "Something went wrong.";
+  if (typeof error === "string") return error;
+
+  // Appwrite error codes/messages
+  if (error.code === 401 || /invalid credentials/i.test(error.message)) {
+    return "Incorrect email or password.";
+  }
+  if (error.code === 409 || /already exists/i.test(error.message)) {
+    return "Account already exists.";
+  }
+  if (/email/i.test(error.message) && /invalid/i.test(error.message)) {
+    return "Invalid email address.";
+  }
+  if (/password/i.test(error.message) && /short/i.test(error.message)) {
+    return "Password is too short.";
+  }
+  // Add more custom mappings as needed
+
+  return error.message || "An unexpected error occurred.";
+}
+
 function Form({ use = "login" }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
+    watch,
+    control,
+    getValues,
     formState: { errors },
   } = useForm();
   const [ Error, setError ] = useState("");
+  const [ userId, setUserId ] = useState("");
 
   const checkUse = (data) => {
 
@@ -27,15 +54,18 @@ function Form({ use = "login" }) {
         setError("");
         try {
           const session = await authService.login(data);
-          console.log(session)
+          if (session && session.code) {
+            setError(session.message || "Login failed");
+            return; // Stop here, do not navigate
+          }
           if (session) {
             await authService.getUser().then((userData) => {
-              console.log("form user data",userData)
               if (userData) {
                 dispatch(setLogin(userData));
                 navigate("/");
               }
-            })}
+            })
+          }
 
         } catch (error) {
           setError(error);
@@ -51,21 +81,55 @@ function Form({ use = "login" }) {
       //async signup function
       const signup = async (data) => {
         setError("");
-        console.log("data from signup", data);
         try {
-          const session = await authService.createAccount({ email: data.email, password: data.password, userId: data.name });
+          console.log(userId);
+          const session = await authService.createAccount({ email: data.email, password: data.password, userId: userId });
+          // Check if session is an error
+          if (session && session.code) {
+            setError(session.message || "Signup failed");
+            return; // Stop here, do not navigate
+          }
           if (session) {
             const userData = await authService.getUser();
             if (userData) dispatch(setLogin(userData));
             navigate("/");
           }
         } catch (error) {
-          setError(error)
+          setError(error?.message || String(error));
         }
       }
       signup(data);
     }
   };
+
+  //generating userId from name
+
+  // converting spaces and alphanumeric value to "-" eg:your-full-name
+  const nameToId = useCallback((value) => {
+    if (value && typeof value === "string") {
+      let id = value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9._-]+/g, "-") // only allow a-z, A-Z, 0-9, ., -, _
+        .replace(/^-+/, "") // remove leading hyphens
+        .replace(/-+$/, ""); // remove trailing hyphens
+      if (!/^[a-zA-Z0-9]/.test(id)) {
+        id = "user-" + id; // ensure it starts with a letter or number
+      }
+      return id.slice(0, 36); // max 36 chars
+    }
+    return "";
+  }, [])
+
+  //every time, title's input changes, post id is set.
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === 'name') setUserId(nameToId(value.name));
+    })
+
+    return () => subscription.unsubscribe();
+
+  }, [ watch, nameToId, ])
 
   return (
     <>
@@ -88,7 +152,7 @@ function Form({ use = "login" }) {
         {/* error section */}
         {(Error || errors?.email) && (
           <p className="w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2">
-            {(Error && Error.message) ? Error.message : String(Error || errors?.email?.message)}
+            {Error ? getFriendlyError(Error) : errors?.email?.message}
           </p>
         )}
 

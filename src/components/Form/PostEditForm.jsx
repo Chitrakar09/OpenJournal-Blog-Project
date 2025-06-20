@@ -105,7 +105,6 @@ function PostEditForm({ post }) {
                         const imgID = img.$id
                         console.log("this is the sent image id:", imgID);
                         try {
-                            console.log(postId);
                             console.log(userData);
                             console.log(userData.userData.$id);
                             const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, imageId: imgID });
