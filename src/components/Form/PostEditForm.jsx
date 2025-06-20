@@ -81,12 +81,12 @@ function PostEditForm({ post }) {
                     if (updatedPost) navigate(`/post/${updatedPost.$id}`);
                 } catch (error) {
                     console.error("Error updating post:", error);
-                    setError(error);
+                    setError(error?.message || String(error));
                 }
             }
             catch (error) {
                 console.log("error uploading image", error)
-                setError(error);
+                setError(error?.message || String(error));
                 return;
 
             }
@@ -106,15 +106,15 @@ function PostEditForm({ post }) {
                         console.log("this is the sent image id:", imgID);
                         try {
                             console.log(userData);
-                            console.log(userData.userData.$id);
-                            const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, imageId: imgID });
+                            console.log(userData.$id || userData.userData.$id);
+                            const addedPost = await databaseService.createPost({ ...data, userId: userData?.$id || userData?.userData.$id, imageId: imgID });
                             if (addedPost) {
                                 console.log("this is what create post returns from database",addedPost)
                                 navigate(`/post/${addedPost.$id}`);
                             }
                         } catch (error) {
                             console.error("Error creating post:", error);
-                            setError(error);
+                            setError(error?.message || String(error));
                         }
 
                     }
@@ -122,7 +122,7 @@ function PostEditForm({ post }) {
                 } catch (error) {
 
                     console.log("error uploading image", error)
-                    setError(error);
+                    setError(error?.message || String(error));
                     return;
 
                 }
@@ -135,13 +135,13 @@ function PostEditForm({ post }) {
                 // if no image is uploaded, create post without image
                 console.log("reached here")
                 try {
-                    const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, imageId: null});
+                    const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null});
                     if (addedPost) {
                         navigate(`/post/${addedPost.$id}`);
                     }
                 } catch (error) {
                     console.error("Error creating post:", error);
-                    setError(error)
+                    setError(error?.message || String(error));
                 }
 
             }

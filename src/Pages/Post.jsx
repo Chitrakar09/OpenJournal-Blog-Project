@@ -45,8 +45,8 @@ function Post() {
 
     useEffect(() => {
        if (Post && userData) {
-        setIsAuthor(Post.userId === userData.userData.$id);
-        console.log("Post.userId:", Post.userId, "userData.$id:", userData.userData.$id);
+        setIsAuthor(Post.userId === userData.$id);
+        console.log("Post.userId:", Post.userId, "userData.$id:", userData.$id);
     } else {
         setIsAuthor(false);
         if (!Post) console.log("Post is null or undefined");
