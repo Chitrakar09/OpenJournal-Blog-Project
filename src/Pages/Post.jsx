@@ -44,23 +44,27 @@ function Post() {
     }, [ postId, navigate ])
 
     useEffect(() => {
-       if (Post && userData) {
-        setIsAuthor(Post.userId === userData.$id);
-        console.log("Post.userId:", Post.userId, "userData.$id:", userData.$id);
-    } else {
-        setIsAuthor(false);
-        if (!Post) console.log("Post is null or undefined");
-        if (!userData) console.log("userData is null or undefined");
-    }
-
-        const getImageUrl = async () => {
-            if (Post && Post.imageId) {
-                const imagesId = databaseService.getFilePreview(Post.imageId);
-                setUrl(imagesId);
-            }
+        const userId = Array.isArray(userData)
+          ? userData[0]?.$id
+          : userData?.userData?.$id || userData?.$id;
+    
+        if (Post && userId) {
+          setIsAuthor(Post.userId === userId);
+          console.log("Post.userId:", Post.userId, "userId:", userId);
+        } else {
+          setIsAuthor(false);
+          if (!Post) console.log("Post is null or undefined");
+          if (!userId) console.log("userId is null or undefined");
         }
-        getImageUrl()
-    }, [ Post ])
+    
+        const getImageUrl = async () => {
+          if (Post && Post.imageId) {
+            const imagesId = databaseService.getFilePreview(Post.imageId);
+            setUrl(imagesId);
+          }
+        };
+        getImageUrl();
+      }, [Post, userData])
 
 
     //delete post

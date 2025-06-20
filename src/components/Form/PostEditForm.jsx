@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router'
 import { Button, SelectComponent, RTE, InputField } from '../index'
 function PostEditForm({ post }) {
+    const [loading, setLoading] = useState(false);
     const [ error, setError ] = useState(null);
     const [ previewUrl, setPreviewUrl ] = useState(null);
     // const [ postId, setPostId ] = useState(null);
@@ -62,89 +63,103 @@ function PostEditForm({ post }) {
 
     // function to execute after submit
     const postSubmit = async (data) => {
-        console.log("clicked the post button");
-        console.log(data);
-        if (!data) return;
-        //Update post
-        if (post) {
-            //to update image file in the bucket
-            try {
-                const updatedImgId = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
-                //if new uploaded, then delete the previous one
-                if (updatedImgId) databaseService.deleteFile(post.imageId);
-
+        setLoading(true);
+        try {
+            console.log("clicked the post button");
+            console.log(data);
+            if (!data) return;
+            //Update post
+            if (post) {
                 try {
-                    //update the database
-                    const updatedPost = await databaseService.updatePost(post.$id, { ...data, imageId: updatedImgId ? updatedImgId.$id : post.imageId ? post.imageId : null });
+                    let imageIdToUse = null;
 
-                    //navigate to the post page
+                    // If user selected a new image, upload it
+                    if (data.image && data.image[0]) {
+                        const uploadedImg = await databaseService.uploadFile(data.image[0]);
+                        if (uploadedImg && uploadedImg.$id) {
+                            imageIdToUse = uploadedImg.$id;
+                            // Optionally delete the old image if it exists
+                            if (post.imageId) {
+                                databaseService.deleteFile(post.imageId);
+                            }
+                        }
+                    } else if (post.imageId) {
+                        // No new image, but post already has an image
+                        imageIdToUse = post.imageId;
+                    }
+                    // else imageIdToUse remains null
+
+                    // Update the database
+                    const updatedPost = await databaseService.updatePost(
+                        post.$id,
+                        { ...data, imageId: imageIdToUse }
+                    );
+
+                    // Navigate to the post page
                     if (updatedPost) navigate(`/post/${updatedPost.$id}`);
                 } catch (error) {
                     console.error("Error updating post:", error);
                     setError(error?.message || String(error));
                 }
             }
-            catch (error) {
-                console.log("error uploading image", error)
-                setError(error?.message || String(error));
-                return;
+            // create post
+            else {
+                // upload image file to the bucket
 
-            }
-
-        }
-        // create post
-        else {
-            // upload image file to the bucket
-
-            // if image is uploaded, then upload the image file to the bucket
-            if (data.image && data.image.length !== 0) {
-                try {
-                    const img = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
-                    //if uploaded, create post
-                    if (img) {
-                        const imgID = img.$id
-                        console.log("this is the sent image id:", imgID);
-                        try {
-                            console.log(userData);
-                            console.log(userData.$id || userData.userData.$id);
-                            const addedPost = await databaseService.createPost({ ...data, userId: userData?.$id || userData?.userData.$id, imageId: imgID });
-                            if (addedPost) {
-                                console.log("this is what create post returns from database",addedPost)
-                                navigate(`/post/${addedPost.$id}`);
+                // if image is uploaded, then upload the image file to the bucket
+                if (data.image && data.image.length !== 0) {
+                    try {
+                        const img = data.image[ 0 ] ? await databaseService.uploadFile(data.image[ 0 ]) : null;
+                        //if uploaded, create post
+                        if (img) {
+                            const imgID = img.$id
+                            console.log("this is the sent image id:", imgID);
+                            try {
+                                console.log(userData);
+                                console.log(userData.$id || userData.userData.$id);
+                                const addedPost = await databaseService.createPost({ ...data, userId: userData?.$id || userData?.userData.$id, imageId: imgID });
+                                if (addedPost) {
+                                    console.log("this is what create post returns from database",addedPost)
+                                    navigate(`/post/${addedPost.$id}`);
+                                }
+                            } catch (error) {
+                                console.error("Error creating post:", error);
+                                setError(error?.message || String(error));
                             }
-                        } catch (error) {
-                            console.error("Error creating post:", error);
-                            setError(error?.message || String(error));
+
                         }
 
+                    } catch (error) {
+
+                        console.log("error uploading image", error)
+                        setError(error?.message || String(error));
+                        return;
+
                     }
 
-                } catch (error) {
 
-                    console.log("error uploading image", error)
-                    setError(error?.message || String(error));
-                    return;
 
                 }
-
-
-
-            }
-            // if no image is uploaded, create post without image
-            else  {
                 // if no image is uploaded, create post without image
-                console.log("reached here")
-                try {
-                    const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null});
-                    if (addedPost) {
-                        navigate(`/post/${addedPost.$id}`);
+                else  {
+                    // if no image is uploaded, create post without image
+                    console.log("reached here")
+                    try {
+                        const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null});
+                        if (addedPost) {
+                            navigate(`/post/${addedPost.$id}`);
+                        }
+                    } catch (error) {
+                        console.error("Error creating post:", error);
+                        setError(error?.message || String(error));
                     }
-                } catch (error) {
-                    console.error("Error creating post:", error);
-                    setError(error?.message || String(error));
-                }
 
+                }
             }
+        } catch (error) {
+            setError(error?.message || String(error));
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -238,7 +253,16 @@ function PostEditForm({ post }) {
             </div>
 
             {/* Button */}
-            <Button text={post ? "Update" : "Post"} type='submit' use='postSubmit' bgColor='bg-[#fca311]' hoverColor='hover:bg-[#e5940c]' activeColor='active:bg-[#cf8608]' className='mt-5 h-12 w-full' />
+            <Button
+                text={loading ? (post ? "Updating..." : "Posting...") : post ? "Update" : "Post"}
+                type='submit'
+                use='postSubmit'
+                bgColor='bg-[#fca311]'
+                hoverColor='hover:bg-[#e5940c]'
+                activeColor='active:bg-[#cf8608]'
+                className='mt-5 h-12 w-full'
+                disabled={loading}
+            />
 
             {id ? (
                 <Link to={`/post/${id}`}>
