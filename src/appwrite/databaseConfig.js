@@ -22,7 +22,7 @@ export class DatabaseService {
       return await this.database.createDocument(
         config.databaseId,
         config.collectionId,
-        postId,
+        ID.unique(),
         {
           title,
           content,

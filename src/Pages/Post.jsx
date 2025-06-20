@@ -12,10 +12,14 @@ function Post() {
     const [ Post, setPost ] = useState(null);
     const [ loading, setLoading ] = useState(null);
     const [ url, setUrl ] = useState(null);
-    const [errorMsg, setErrorMsg] = useState("");
+    const [ errorMsg, setErrorMsg ] = useState("");
+    const [isAuthor, setIsAuthor] = useState(false);
+
+    console.log(userData);
 
     // to check if its author or not
-    const isAuthor = Post && userData ? Post.userId === userData.$id : false;
+
+
 
 
 
@@ -24,8 +28,10 @@ function Post() {
         setLoading(true);
         if (postId) {
             databaseService.getPost(postId).then((post) => {
+                console.log(post);
                 if (post) {
                     setPost(post);
+                    
                     setLoading(false);
                 }
                 // else navigate("/allPost");
@@ -34,10 +40,19 @@ function Post() {
         }
         // else navigate("/allPost");
         else setErrorMsg("Post id not found")
-        
+
     }, [ postId, navigate ])
 
     useEffect(() => {
+       if (Post && userData) {
+        setIsAuthor(Post.userId === userData.userData.$id);
+        console.log("Post.userId:", Post.userId, "userData.$id:", userData.userData.$id);
+    } else {
+        setIsAuthor(false);
+        if (!Post) console.log("Post is null or undefined");
+        if (!userData) console.log("userData is null or undefined");
+    }
+
         const getImageUrl = async () => {
             if (Post && Post.imageId) {
                 const imagesId = databaseService.getFilePreview(Post.imageId);
@@ -46,6 +61,7 @@ function Post() {
         }
         getImageUrl()
     }, [ Post ])
+
 
     //delete post
     const deletePost = () => {
@@ -59,7 +75,11 @@ function Post() {
 
 
     return (
-        loading ? (<Container className="justify-center"><Loader /></Container>) : (
+        loading ? (<Container className="justify-center"><Loader /></Container>) :
+        errorMsg?(<Container>
+                <h3 className="text-center text-5xl text-amber-100">{errorMsg}</h3>
+            </Container>):
+        (
             Post ? (
                 <div className="min-h-screen bg-gradient-to-b from-[#14213d] to-black text-white px-2 py-6 md:px-6 md:py-10 flex items-start justify-center w-full">
                     <div className="w-full bg-[#14213d] rounded-3xl shadow-2xl overflow-hidden border border-[#e5e5e5]/10">

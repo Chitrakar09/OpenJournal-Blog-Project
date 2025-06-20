@@ -17,7 +17,7 @@ function InputField({
       {label && (
         <label
           htmlFor={id} //for seo purpose
-          className="block mb-1 text-sm font-medium text-[#14213d]"
+          className="block mb-1 text-xl font-medium text-[#14213d]"
         >
           {label}
         </label>

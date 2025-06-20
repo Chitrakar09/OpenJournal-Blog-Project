@@ -8,29 +8,59 @@ function AllPost() {
   const [loading, setLoading] = useState(true);
 
   const userData = useSelector((state) => state.Auth.userData);
-  const userId = userData?.userData?.$id;
 
   useEffect(() => {
-    if (!userId) {
+    console.log("userData changed:", userData);
+    
+    // If userData is undefined, we're still loading auth
+    if (userData === undefined) {
+      setLoading(true);
+      return;
+    }
+    
+    // If userData is empty array or null, user is not authenticated
+    if (!userData || (Array.isArray(userData) && userData.length === 0)) {
+      setLoading(false);
+      setPosts([]);
       return;
     }
 
+    // We have valid userData, fetch posts
     setLoading(true);
+    
     async function fetchPosts() {
       try {
+        // Handle both array and object userData structures
+        let userId;
+        if (Array.isArray(userData)) {
+          userId = userData[0]?.userData?.$id || userData[0]?.$id;
+        } else {
+          userId = userData.userData?.$id || userData.$id;
+        }
+
+        if (!userId) {
+          console.log("No valid userId found in userData");
+          setPosts([]);
+          return;
+        }
+
+        console.log("Fetching posts for user:", userId);
         const allPosts = await databaseService.getAllPost(userId);
+        console.log("Received posts:", allPosts);
         setPosts(allPosts?.documents || []);
       } catch (error) {
+        console.error("Error fetching posts:", error);
         setPosts([]);
-        console.error(error);
       } finally {
         setLoading(false);
       }
     }
-    fetchPosts();
-  }, [userId]);
 
-    if (!userData) {
+    fetchPosts();
+  }, [userData]);
+
+  // Show loader while userData is undefined (auth loading)
+  if (userData === undefined) {
     return (
       <Container>
         <div className="w-full h-screen flex justify-center items-center">
@@ -40,6 +70,10 @@ function AllPost() {
     );
   }
 
+  // Check if user is authenticated
+  const isAuthenticated = userData && 
+    ((Array.isArray(userData) && userData.length > 0) || 
+     (typeof userData === 'object' && userData !== null && !Array.isArray(userData)));
 
   return (
     <Container>
@@ -47,7 +81,16 @@ function AllPost() {
         <h1 className="text-4xl font-bold text-[#14213d] text-center mb-8 tracking-tight">
           Latest <span className="text-[#fca311]">Posts</span>
         </h1>
-        {loading ? (
+        
+        {!isAuthenticated ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <h2 className="text-2xl text-[#14213d] font-semibold">
+                Please log in to view posts
+              </h2>
+            </div>
+          </div>
+        ) : loading ? (
           <div className="w-full h-full flex justify-center items-center">
             <Loader />
           </div>

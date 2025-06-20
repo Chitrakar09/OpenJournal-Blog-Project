@@ -107,8 +107,8 @@ function PostEditForm({ post }) {
                         try {
                             console.log(postId);
                             console.log(userData);
-                            console.log(userData.$id);
-                            const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, postId: postId, imageId: imgID });
+                            console.log(userData.userData.$id);
+                            const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, imageId: imgID });
                             if (addedPost) {
                                 console.log("this is what create post returns from database",addedPost)
                                 navigate(`/post/${addedPost.$id}`);
@@ -149,6 +149,7 @@ function PostEditForm({ post }) {
         }
     }
 
+    {/*
     //generating post id from title
 
     // converting spaces and alphanumeric value to "-" eg:react-test-ground
@@ -172,6 +173,8 @@ function PostEditForm({ post }) {
         return () => subscription.unsubscribe();
 
     }, [ watch, titleToId, ])
+
+    */}
 
     // to generate a image url for live preview of the uploaded image
     useEffect(() => {
@@ -218,7 +221,7 @@ function PostEditForm({ post }) {
 
                 {/* Image */}
                 <div className="space-y-3 flex flex-col items-center">
-                    <label className="block mb-2 font-semibold">Featured Image</label>
+                    <label className="block mb-2 font-semibold">Add image</label>
                     <input
                         type="file"
                         name="image"

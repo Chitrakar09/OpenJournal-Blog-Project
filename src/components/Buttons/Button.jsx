@@ -8,8 +8,8 @@ function Button({
   text = "Sign Up",
   type = "submit",
   use = "signup",
-  bgColor = "bg-[#14213d]",
-  hoverColor = "hover:bg-[#1a2b4a]",
+  bgColor = "bg-[#fca311]",
+  hoverColor = "hover:bg-[#14213d]",
   activeColor = "active:bg-[#0f1b2e]",
   className = "",
   ...props
@@ -25,13 +25,13 @@ function Button({
     authService.logout().
       then(() => { 
         dispatch(logout()); 
-        navigate("/");
+        navigate("/home");
       });
   }
 
   // Login button used to navigate to login page
   const loginBtn = () => {
-    navigate("/login") // redirects to login page on click if the use is login
+    navigate("/signup") // redirects to login page on click if the use is login
   }
 
 

@@ -56,7 +56,7 @@ function Header() {
             
             (location.pathname==="/home")?(
             <Button
-              text="Login"
+              text="Login / Sign Up"
               type="submit"
               use="navLogin"
               bgColor="bg-[#14213d]"

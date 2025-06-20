@@ -153,8 +153,8 @@ function Form({ use = "login" }) {
             text="Login"
             type="submit"
             use="login"
-            bgColor="bg-[#14213d]"
-            hoverColor="hover:bg-[#1a2b4a]"
+            bgColor="bg-[#fca311]"
+            hoverColor="hover:bg-[#14213d]"
             activeColor="active:bg-[#0f1b2e]"
           />
         )}
@@ -165,7 +165,7 @@ function Form({ use = "login" }) {
             Don't have an account?{" "}
             <Link
               to={"/signup"}
-              className="text-[#fca311] font-medium hover:underline"
+              className="text-[#b1710b] text-xl font-medium hover:underline"
             >
               Sign up
             </Link>
@@ -175,7 +175,7 @@ function Form({ use = "login" }) {
             Already have an account?{" "}
             <Link
               to={"/login"}
-              className="text-[#fca311] font-medium hover:underline"
+              className="text-[#b1710b] text-xl font-medium hover:underline"
             >
               Log in
             </Link>

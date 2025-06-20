@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faInstagram, faLinkedin, faGithub } from "@fortawesome/free-brands-svg-icons";
 
@@ -23,24 +23,24 @@ function Home() {
             link: "https://github.com/Chitrakar09"
         } ]
 
-    const featuredImg = [
-        {
-            id: 1,
-            src: "1.jpg"
-        },
-        {
-            id: 2,
-            src: "2.jpg"
-        },
-        {
-            id: 3,
-            src: "3.jpg"
-        },
-        {
-            id: 4,
-            src: "4.jpg"
-        },
-    ]
+    // const featuredImg = [
+    //     {
+    //         id: 1,
+    //         src: "1.jpg"
+    //     },
+    //     {
+    //         id: 2,
+    //         src: "2.jpg"
+    //     },
+    //     {
+    //         id: 3,
+    //         src: "3.jpg"
+    //     },
+    //     {
+    //         id: 4,
+    //         src: "4.jpg"
+    //     },
+    // ]
 
     // checks if logged in. if logged in then redirect to all post
     const isLoggedIn = useSelector((state) => state.Auth.status);
@@ -61,9 +61,12 @@ function Home() {
                                 and connecting with like-minded individuals on a platform designed for your thoughts and ideas
                                 to flourish.
                             </p>
-                            <button onClick={() => isLoggedIn ? navigate("/addPost") : navigate("/login")} className="bg-[#fca311] text-black px-5 py-2 rounded-full font-semibold hover:bg-[#e5940c] transition">
+                            <Link to={isLoggedIn?"/allPost":"/login"}>
+                                <button type='button' className="bg-[#fca311] text-black px-5 py-2 rounded-full font-semibold hover:bg-[#e5940c] transition">
                                 Start Writing
                             </button>
+                            </Link>
+                            
                         </div>
                     </div>
 

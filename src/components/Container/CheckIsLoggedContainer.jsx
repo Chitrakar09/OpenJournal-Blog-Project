@@ -33,7 +33,7 @@ function Protected({ children, requireLogin = true }) {
 
         let shouldRedirect = false
         if (requireLogin && isLoggedIn !== requireLogin) {
-            navigate("/login");
+            navigate("/home");
             shouldRedirect = true;
         }
         else if (isLoggedIn && requireLogin !== isLoggedIn) {
