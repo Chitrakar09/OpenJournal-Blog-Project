@@ -15,7 +15,7 @@ function Form({ use = "login" }) {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [ error, setError ] = useState("");
+  const [ Error, setError ] = useState("");
 
   const checkUse = (data) => {
 
@@ -86,9 +86,9 @@ function Form({ use = "login" }) {
           <h1 className="text-2xl font-bold text-[#14213d] mb-4 w-full text-center">Login</h1>)}
 
         {/* error section */}
-        {(error || errors?.email) && (
+        {(Error || errors?.email) && (
           <p className="w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2">
-            {(error && error.message) ? error.message : String(error || errors?.email?.message)}
+            {(Error && Error.message) ? Error.message : String(Error || errors?.email?.message)}
           </p>
         )}
 

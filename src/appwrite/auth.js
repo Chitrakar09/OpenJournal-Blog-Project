@@ -26,7 +26,7 @@ export class AuthService{ //this is a class
                 return userAccount; //handle whatever value gotten later
             }
         } catch (error) {
-            console.log("Appwrite service :: create Account :: error",error)
+            console.error("Appwrite service :: create Account :: error",error)
             return error
         }
     }
@@ -36,7 +36,7 @@ export class AuthService{ //this is a class
         try {
             return await this.account.createEmailPasswordSession(email,password);
         } catch (error) {
-            console.log("Appwrite service :: login :: error",error)
+            console.error("Appwrite service :: login :: error",error)
             return error
         }
     }
@@ -46,7 +46,7 @@ export class AuthService{ //this is a class
         try {
             return await this.account.get();
         } catch (error) {
-           console.log("Appwrite service :: getUser :: error",error)
+           console.error("Appwrite service :: getUser :: error",error)
         }
         // what if account not found? the value is null. Also if there is error in try catch then this automatically returns null value 
         return null;
@@ -57,7 +57,7 @@ export class AuthService{ //this is a class
         try {
             return await this.account.deleteSessions();
         } catch (error) {
-            console.log("Appwrite service :: logout :: error",error)
+            console.error("Appwrite service :: logout :: error",error)
             return error
         }
     }

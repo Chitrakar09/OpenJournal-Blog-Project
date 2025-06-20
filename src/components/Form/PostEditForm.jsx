@@ -8,7 +8,7 @@ import { Button, SelectComponent, RTE, InputField } from '../index'
 function PostEditForm({ post }) {
     const [ error, setError ] = useState(null);
     const [ previewUrl, setPreviewUrl ] = useState(null);
-    const [ postId, setPostId ] = useState(null);
+    // const [ postId, setPostId ] = useState(null);
     const [ imageUrl, setImageUrl ] = useState(null);
     const [ id, setId ] = useState(null);
     const navigate = useNavigate();
@@ -136,7 +136,7 @@ function PostEditForm({ post }) {
                 // if no image is uploaded, create post without image
                 console.log("reached here")
                 try {
-                    const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, imageId: null, postId: postId });
+                    const addedPost = await databaseService.createPost({ ...data, userId: userData.userData.$id, imageId: null});
                     if (addedPost) {
                         navigate(`/post/${addedPost.$id}`);
                     }

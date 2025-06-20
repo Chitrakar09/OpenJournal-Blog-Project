@@ -84,6 +84,7 @@ export class DatabaseService {
       );
     } catch (error) {
       console.log("Appwrite service :: getPost :: error", error);
+      return error
     }
   }
 
@@ -117,6 +118,7 @@ export class DatabaseService {
       return uploadedFile
     } catch (error) {
       console.log("Appwrite service :: uploadFile :: error", error);
+      return error
     }
   }
 
@@ -140,6 +142,7 @@ export class DatabaseService {
         )
     } catch (error) {
         console.log("Appwrite service :: getFilePreview :: error",error)
+        return error
     }
   }
 }
