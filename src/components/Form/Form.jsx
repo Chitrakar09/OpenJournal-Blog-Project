@@ -12,22 +12,32 @@ function getFriendlyError(error) {
   if (!error) return "Something went wrong.";
   if (typeof error === "string") return error;
 
+  // Try to extract a message from various possible error shapes
+  const message =
+    error.message ||
+    error?.response?.message ||
+    (typeof error.toString === "function" ? error.toString() : "") ||
+    String(error);
+
   // Appwrite error codes/messages
-  if (error.code === 401 || /invalid credentials/i.test(error.message)) {
+  if (error.code === 401 || /invalid credentials/i.test(message)) {
     return "Incorrect email or password.";
   }
-  if (error.code === 409 || /already exists/i.test(error.message)) {
+  if (error.code === 409 || /already exists/i.test(message)) {
     return "Account already exists.";
   }
-  if (/email/i.test(error.message) && /invalid/i.test(error.message)) {
+  if (/email/i.test(message) && /invalid/i.test(message)) {
     return "Invalid email address.";
   }
-  if (/password/i.test(error.message) && /short/i.test(error.message)) {
+  if (/password/i.test(message) && /short/i.test(message)) {
     return "Password is too short.";
+  }
+  if (/rate limit/i.test(message)) {
+    return "Too many requests. Please wait a moment and try again.";
   }
   // Add more custom mappings as needed
 
-  return error.message || "An unexpected error occurred.";
+  return message || "An unexpected error occurred.";
 }
 
 function Form({ use = "login" }) {
@@ -41,21 +51,19 @@ function Form({ use = "login" }) {
     getValues,
     formState: { errors },
   } = useForm();
-  const [ Error, setError ] = useState("");
-  const [ userId, setUserId ] = useState("");
+  const [Error, setError] = useState("");
+  const [userId, setUserId] = useState("");
 
   const checkUse = (data) => {
-
     //for login handling
     if (use.toLowerCase() === "login") {
       //async login function
       const loginFunction = async (data) => {
-        console.log(data);
         setError("");
         try {
           const session = await authService.login(data);
           if (session && session.code) {
-            setError(session.message || "Login failed");
+            setError(session);
             return; // Stop here, do not navigate
           }
           if (session) {
@@ -64,15 +72,12 @@ function Form({ use = "login" }) {
                 dispatch(setLogin(userData));
                 navigate("/");
               }
-            })
+            });
           }
-
         } catch (error) {
           setError(error);
-          console.log("hi from form login function")
         }
-
-      }
+      };
       loginFunction(data);
     }
 
@@ -82,11 +87,14 @@ function Form({ use = "login" }) {
       const signup = async (data) => {
         setError("");
         try {
-          console.log(userId);
-          const session = await authService.createAccount({ email: data.email, password: data.password, userId: userId });
+          const session = await authService.createAccount({
+            email: data.email,
+            password: data.password,
+            userId: userId,
+          });
           // Check if session is an error
           if (session && session.code) {
-            setError(session.message || "Signup failed");
+            setError(session);
             return; // Stop here, do not navigate
           }
           if (session) {
@@ -95,15 +103,14 @@ function Form({ use = "login" }) {
             navigate("/");
           }
         } catch (error) {
-          setError(error?.message || String(error));
+          setError(error);
         }
-      }
+      };
       signup(data);
     }
   };
 
   //generating userId from name
-
   // converting spaces and alphanumeric value to "-" eg:your-full-name
   const nameToId = useCallback((value) => {
     if (value && typeof value === "string") {
@@ -119,17 +126,16 @@ function Form({ use = "login" }) {
       return id.slice(0, 36); // max 36 chars
     }
     return "";
-  }, [])
+  }, []);
 
-  //every time, title's input changes, post id is set.
+  //every time, name's input changes, user id is set.
   useEffect(() => {
     const subscription = watch((value, { name }) => {
-      if (name === 'name') setUserId(nameToId(value.name));
-    })
+      if (name === "name") setUserId(nameToId(value.name));
+    });
 
     return () => subscription.unsubscribe();
-
-  }, [ watch, nameToId, ])
+  }, [watch, nameToId]);
 
   return (
     <>
@@ -146,8 +152,14 @@ function Form({ use = "login" }) {
 
         {/* title section */}
         {use.toLowerCase() === "signup" ? (
-          <h1 className="text-2xl font-bold text-[#14213d] mb-4 w-full text-center">Sign Up</h1>) : (
-          <h1 className="text-2xl font-bold text-[#14213d] mb-4 w-full text-center">Login</h1>)}
+          <h1 className="text-2xl font-bold text-[#14213d] mb-4 w-full text-center">
+            Sign Up
+          </h1>
+        ) : (
+          <h1 className="text-2xl font-bold text-[#14213d] mb-4 w-full text-center">
+            Login
+          </h1>
+        )}
 
         {/* error section */}
         {(Error || errors?.email) && (
@@ -157,7 +169,6 @@ function Form({ use = "login" }) {
         )}
 
         {/* Input field section */}
-
         {use.toLowerCase() === "signup" ? (
           <>
             <InputField
@@ -209,7 +220,6 @@ function Form({ use = "login" }) {
         />
 
         {/* button section */}
-
         {use.toLowerCase() === "signup" ? (
           <Button />
         ) : (
