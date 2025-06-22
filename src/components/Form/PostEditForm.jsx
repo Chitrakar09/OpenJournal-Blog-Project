@@ -13,6 +13,10 @@ function PostEditForm({ post }) {
     const [ id, setId ] = useState(null);
     const navigate = useNavigate();
     const userData = useSelector((state) => state.Auth.userData);
+    // Safely extract userId from userData (array or object)
+    const userId = Array.isArray(userData)
+  ? userData[0]?.$id
+  : userData?.userData?.$id || userData?.$id;
     const { register, handleSubmit, watch, control, getValues } = useForm({
         defaultValues: {
             title: post?.title || '',
@@ -106,7 +110,7 @@ function PostEditForm({ post }) {
                         if (img) {
                             const imgID = img.$id
                             try {
-                                const addedPost = await databaseService.createPost({ ...data, userId: userData?.$id || userData?.userData.$id, imageId: imgID });
+                                const addedPost = await databaseService.createPost({ ...data, userId: userId, imageId: imgID });
                                 if (addedPost) {
                                     navigate(`/post/${addedPost.$id}`);
                                 }
@@ -129,7 +133,7 @@ function PostEditForm({ post }) {
                 else  {
                     // if no image is uploaded, create post without image
                     try {
-                        const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null});
+                        const addedPost = await databaseService.createPost({ ...data, userId: userId, imageId: null});
                         if (addedPost) {
                             navigate(`/post/${addedPost.$id}`);
                         }

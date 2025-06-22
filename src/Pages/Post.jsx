@@ -70,8 +70,7 @@ function Post() {
             }
         })
     }
-
-
+    
     return (
         loading ? (<Container className="justify-center"><Loader /></Container>) :
         errorMsg?(<Container>
@@ -155,13 +154,13 @@ function Post() {
                                 className="text-base md:text-lg break-words"
                                 style={{
                                     color: "#e5e5e5",
-                                    background: Post.content.length < 20 ? "#00000022" : "transparent",
-                                    borderRadius: Post.content.length < 20 ? "0.5rem" : "0",
-                                    padding: Post.content.length < 20 ? "0.5rem 1rem" : "0",
-                                    display: Post.content.trim() ? "block" : "none",
+                                    background: Post?.content?.length < 20 ? "#00000022" : "transparent",
+                                    borderRadius: Post?.content?.length < 20 ? "0.5rem" : "0",
+                                    padding: Post?.content?.length < 20 ? "0.5rem 1rem" : "0",
+                                    display: Post?.content?.trim() ? "block" : "none",
                                 }}
                             >
-                                {parse(Post.content) || ""}
+                                {parse(typeof Post?.content=== "string"? Post.content : "")}
                             </div>
 
                         </div>

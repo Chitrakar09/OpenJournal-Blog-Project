@@ -44,7 +44,6 @@ function RTE({ name, control, label, defaultValue = "" }) {
                             },
                             content_style: `
                                 body {
-                                border: 1px solid black;
                                 background-color: #f0f0f0;
                                 color: #000000;
                                 font-family: Helvetica, Arial, sans-serif;
