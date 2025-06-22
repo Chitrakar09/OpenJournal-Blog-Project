@@ -1,5 +1,4 @@
 import Header from "./Header/Header";
-import Footer from "./footer/Footer";
 import Button from "./Buttons/Button";
 import InputField from "./InputField/InputField";
 import SelectComponent from "./Select/Select";
