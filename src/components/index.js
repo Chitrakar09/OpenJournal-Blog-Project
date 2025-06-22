@@ -1,5 +1,4 @@
 import Header from "./Header/Header";
-import Footer from "./footer/Footer";
 import Button from "./Buttons/Button";
 import InputField from "./InputField/InputField";
 import SelectComponent from "./Select/Select";
@@ -16,7 +15,6 @@ import Protected from "./Container/CheckIsLoggedContainer";
 
 export {
   Header,
-  Footer,
   Button,
   InputField,
   SelectComponent,
