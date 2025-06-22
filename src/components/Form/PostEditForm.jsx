@@ -68,10 +68,14 @@ function PostEditForm({ post }) {
             //Update post
             if (post) {
                 try {
-                    let imageIdToUse = null;
-
+                    let imageIdToUse =null;
+                     
+                    if (post.imageId) {
+                        // No new image, but post already has an image
+                        imageIdToUse = post.imageId;
+                    }
                     // If user selected a new image, upload it
-                    if (data.image && data.image[0]) {
+                   else if (data.image && data.image[0]) {
                         const uploadedImg = await databaseService.uploadFile(data.image[0]);
                         if (uploadedImg && uploadedImg.$id) {
                             imageIdToUse = uploadedImg.$id;
@@ -80,10 +84,7 @@ function PostEditForm({ post }) {
                                 databaseService.deleteFile(post.imageId);
                             }
                         }
-                    } else if (post.imageId) {
-                        // No new image, but post already has an image
-                        imageIdToUse = post.imageId;
-                    }
+                    } 
                     // else imageIdToUse remains null
 
                     // Update the database
