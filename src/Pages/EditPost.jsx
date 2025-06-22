@@ -20,7 +20,6 @@ function EditPost() {
                         }
                     })
                 } catch (error) {
-                    console.error("Error fetching post:", error);
                     setError(error);
                 } finally { setLoading(false) }
             } else {

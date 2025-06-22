@@ -14,15 +14,21 @@ function PostEditForm({ post }) {
     const [ id, setId ] = useState(null);
     const navigate = useNavigate();
     const userData = useSelector((state) => state.Auth.userData);
-    console.log(userData)
-    const { register, handleSubmit, watch, control, getValues } = useForm({
-        defaultValues: {
-            title: post?.title || '',
-            id: post?.$id || '',
-            content: post?.content || '',
-            status: post?.status || 'active',
-            image: post?.imageId || null
-        },
+    const {
+      register,
+      handleSubmit,
+      watch,
+      control,
+      getValues,
+      formState: { errors }
+    } = useForm({
+      defaultValues: {
+        title: post?.title || '',
+        id: post?.$id || '',
+        content: post?.content || '',
+        status: post?.status || 'active',
+        image: post?.imageId || null
+      }
     });
     const watchedImage = watch("image");
 
@@ -38,14 +44,9 @@ function PostEditForm({ post }) {
             if (post.$id) setId(post.$id);
 
             if (post.imageId) {
-                console.log("this is the image id obtained from retrieved post", post.imageId)
-                const getImg = async () => {
                     try {
                         const url = databaseService.getFilePreview(post.imageId);
-                        console.log("this is the image url obtained from database", url)
-                        setImageUrl(url);
                     } catch (error) {
-                        console.error("Error fetching image URL:", error);
                         setError("Failed to load image.", error);
                         // If there's an error fetching the image, set imageUrl to null
                         setImageUrl(null);
@@ -57,7 +58,7 @@ function PostEditForm({ post }) {
             else {
                 setImageUrl(null)
             }
-        }
+        
 
     }, [ post, previewUrl ])
 
@@ -65,8 +66,6 @@ function PostEditForm({ post }) {
     const postSubmit = async (data) => {
         setLoading(true);
         try {
-            console.log("clicked the post button");
-            console.log(data);
             if (!data) return;
             //Update post
             if (post) {
@@ -98,7 +97,6 @@ function PostEditForm({ post }) {
                     // Navigate to the post page
                     if (updatedPost) navigate(`/post/${updatedPost.$id}`);
                 } catch (error) {
-                    console.error("Error updating post:", error);
                     setError(error?.message || String(error));
                 }
             }
@@ -113,28 +111,19 @@ function PostEditForm({ post }) {
                         //if uploaded, create post
                         if (img) {
                             const imgID = img.$id
-                            console.log("this is the sent image id:", imgID);
                             try {
-                                console.log(userData);
-                                console.log(userData.$id || userData.userData.$id);
                                 const addedPost = await databaseService.createPost({ ...data, userId: userData?.$id || userData?.userData.$id, imageId: imgID });
                                 if (addedPost) {
-                                    console.log("this is what create post returns from database",addedPost)
-                                    navigate(`/post/${addedPost.$id}`);
                                 }
                             } catch (error) {
-                                console.error("Error creating post:", error);
                                 setError(error?.message || String(error));
                             }
 
                         }
 
                     } catch (error) {
-
-                        console.log("error uploading image", error)
                         setError(error?.message || String(error));
                         return;
-
                     }
 
 
@@ -143,14 +132,12 @@ function PostEditForm({ post }) {
                 // if no image is uploaded, create post without image
                 else  {
                     // if no image is uploaded, create post without image
-                    console.log("reached here")
-                    try {
+                        try{
                         const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null});
                         if (addedPost) {
                             navigate(`/post/${addedPost.$id}`);
                         }
                     } catch (error) {
-                        console.error("Error creating post:", error);
                         setError(error?.message || String(error));
                     }
 
@@ -162,33 +149,6 @@ function PostEditForm({ post }) {
             setLoading(false);
         }
     }
-
-    {/*
-    //generating post id from title
-
-    // converting spaces and alphanumeric value to "-" eg:react-test-ground
-    const titleToId = useCallback((value) => {
-
-        if (value && typeof value === "string") return value
-            .trim()
-            .toLowerCase()
-            .replace(/[^a-zA-Z\d\s]+/g, "-")
-            .replace(/\s/g, "-");
-
-        return "";
-    }, [])
-
-    //every time, title's input changes, post id is set.
-    useEffect(() => {
-        const subscription = watch((value, { name }) => {
-            if (name === 'title') setPostId(titleToId(value.title));
-        })
-
-        return () => subscription.unsubscribe();
-
-    }, [ watch, titleToId, ])
-
-    */}
 
     // to generate a image url for live preview of the uploaded image
     useEffect(() => {
@@ -211,7 +171,7 @@ function PostEditForm({ post }) {
         >
             <h2 className="text-2xl font-bold mb-6 text-center">Create a New Post</h2>
 
-            {error && <h1 className='w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2'>{error}</h1>}
+            {error || errors && <h1 className='w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2'>{error || errors}</h1>}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
@@ -289,7 +249,7 @@ function PostEditForm({ post }) {
                 </Link>
             )}
         </form>
-    )
-}
+    )}
+
 
 export default PostEditForm

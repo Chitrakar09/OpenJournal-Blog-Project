@@ -15,10 +15,7 @@ export class DatabaseService {
   // create a document in database. database->collection->document(post). All data's are stored in document
   async createPost({ title,postId, content, imageId, status, userId }) {
     if(!imageId) imageId = null; // if imageId is not provided, set it to null
-    console.log("image id in create post",imageId);
-    console.log("this is the post id in database",postId);
-    console.log("this is the userId in database",userId)
-    try {
+    try{
       return await this.database.createDocument(
         config.databaseId,
         config.collectionId,
@@ -32,7 +29,6 @@ export class DatabaseService {
         }
       );
     } catch (error) {
-      console.log("Appwrite service :: createPost :: error", error);
       return error
     }
   }
@@ -54,7 +50,6 @@ export class DatabaseService {
         }
       );
     } catch (error) {
-      console.log("Appwrite service :: updatePost :: error", error);
       return error
     }
   }
@@ -69,7 +64,6 @@ export class DatabaseService {
       );
       return true;
     } catch (error) {
-      console.log("Appwrite service :: deletePost :: error", error);
       return false;
     }
   }
@@ -83,7 +77,6 @@ export class DatabaseService {
         postId
       );
     } catch (error) {
-      console.log("Appwrite service :: getPost :: error", error);
       return error
     }
   }
@@ -102,7 +95,6 @@ export class DatabaseService {
         ]
       );
     } catch (error) {
-      console.log("Appwrite service :: getAllPost :: error", error);
       return false; // for no values found
     }
   }
@@ -114,10 +106,7 @@ export class DatabaseService {
   async uploadFile(file) {
     try {
       const uploadedFile=await this.bucket.createFile(config.buckedId, ID.unique(), file);
-      console.log("the return obtained from upload file in database service",uploadedFile)
-      return uploadedFile
     } catch (error) {
-      console.log("Appwrite service :: uploadFile :: error", error);
       return error
     }
   }
@@ -128,7 +117,6 @@ export class DatabaseService {
         await this.bucket.deleteFile(config.buckedId, fileId);
         return true
     } catch (error) {
-      console.log("Appwrite service :: deleteFile :: error", error);
       return false
     }
   }
@@ -141,8 +129,7 @@ export class DatabaseService {
             fileId
         )
     } catch (error) {
-        console.log("Appwrite service :: getFilePreview :: error",error)
-        return error
+      return error
     }
   }
 }

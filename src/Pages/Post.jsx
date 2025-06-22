@@ -14,9 +14,6 @@ function Post() {
     const [ url, setUrl ] = useState(null);
     const [ errorMsg, setErrorMsg ] = useState("");
     const [isAuthor, setIsAuthor] = useState(false);
-
-    console.log(userData);
-
     // to check if its author or not
 
 
@@ -28,10 +25,8 @@ function Post() {
         setLoading(true);
         if (postId) {
             databaseService.getPost(postId).then((post) => {
-                console.log(post);
                 if (post) {
                     setPost(post);
-                    
                     setLoading(false);
                 }
                 // else navigate("/allPost");
@@ -50,11 +45,8 @@ function Post() {
     
         if (Post && userId) {
           setIsAuthor(Post.userId === userId);
-          console.log("Post.userId:", Post.userId, "userId:", userId);
         } else {
           setIsAuthor(false);
-          if (!Post) console.log("Post is null or undefined");
-          if (!userId) console.log("userId is null or undefined");
         }
     
         const getImageUrl = async () => {

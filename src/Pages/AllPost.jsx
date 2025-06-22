@@ -11,8 +11,6 @@ function AllPost() {
   const userData = useSelector((state) => state.Auth.userData);
 
   useEffect(() => {
-    console.log("userData changed:", userData);
-
     // If userData is undefined, we're still loading auth
     if (userData === undefined) {
       setLoading(true);
@@ -40,17 +38,12 @@ function AllPost() {
         }
 
         if (!userId) {
-          console.log("No valid userId found in userData");
           setPosts([]);
           return;
         }
-
-        console.log("Fetching posts for user:", userId);
         const allPosts = await databaseService.getAllPost(userId);
-        console.log("Received posts:", allPosts);
         setPosts(allPosts?.documents || []);
       } catch (error) {
-        console.error("Error fetching posts:", error);
         setPosts([]);
       } finally {
         setLoading(false);

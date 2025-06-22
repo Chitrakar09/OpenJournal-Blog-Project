@@ -16,7 +16,7 @@ function App() {
     const checkAuth = async () => {
       try {
         const userData=await authService.getUser();
-        console.log(userData);
+
           if (userData) {
             dispatch(login({ userData }));
             setLoading(false);
@@ -26,7 +26,7 @@ function App() {
           }
 
       } catch (error) {
-        console.log("failure to authenticate",error);
+
         dispatch(logout());
       }
   }

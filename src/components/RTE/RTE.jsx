@@ -67,6 +67,3 @@ function RTE({ name, control, label, defaultValue = "" }) {
 }
 
 export default RTE
-
-//TODO configure code highlighting in web page
-//TODO configure, media and image plugin

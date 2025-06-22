@@ -17,7 +17,6 @@ export class AuthService{ //this is a class
     //returns a promise.
 
     async createAccount({userId,email,password}){
-        console.log("userId in create account",userId);
         try {
             const userAccount= await this.account.create(userId,email, password);
             if (userAccount) {
@@ -27,7 +26,6 @@ export class AuthService{ //this is a class
                 return userAccount; //handle whatever value gotten later
             }
         } catch (error) {
-            console.error("Appwrite service :: create Account :: error",error)
             return error
         }
     }
@@ -37,28 +35,25 @@ export class AuthService{ //this is a class
         try {
             return await this.account.createEmailPasswordSession(email,password);
         } catch (error) {
-            console.error("Appwrite service :: login :: error",error)
             return error
         }
     }
+    
 
     // method to get user status
     async getUser(){
         try {
             return await this.account.get();
         } catch (error) {
-           console.error("Appwrite service :: getUser :: error",error)
-        }
         // what if account not found? the value is null. Also if there is error in try catch then this automatically returns null value 
         return null;
     }
-
+    }
     //method to logout
     async logout(){
         try {
             return await this.account.deleteSessions();
         } catch (error) {
-            console.error("Appwrite service :: logout :: error",error)
             return error
         }
     }
