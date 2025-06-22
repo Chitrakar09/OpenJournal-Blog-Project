@@ -26,15 +26,12 @@ function RTE({ name, control, label, defaultValue = "" }) {
                             height: 500,
                             menubar: true, // desktop menubar enabled
                             plugins: [
-                                "advlist", "anchor", "autolink", "charmap", "codesample",
-                                "directionality", "fullscreen", "help", "insertdatetime",
-                                "link", "lists", "preview", "searchreplace", "table",
-                                "visualblocks", "wordcount"
+                                "help", "link", "wordcount"
                             ],
                             toolbar:
                                 "undo redo | blocks | bold italic underline strikethrough | " +
-                                "forecolor backcolor | link image media | alignleft aligncenter alignright alignjustify | " +
-                                "bullist numlist outdent indent | removeformat | charmap anchor | ltr rtl | visualblocks fullscreen | searchreplace insertdatetime table | help",
+                                "forecolor backcolor | link | alignleft aligncenter alignright alignjustify | " +
+                                "bullist numlist outdent indent | removeformat | charmap anchor | ltr rtl | help",
                             mobile: {
                                 menubar: false, // mobile menubar disabled
                                 toolbar: [
