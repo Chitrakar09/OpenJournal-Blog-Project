@@ -171,7 +171,7 @@ function PostEditForm({ post }) {
         >
             <h2 className="text-2xl font-bold mb-6 text-center">Create a New Post</h2>
 
-            {error || errors && <h1 className='w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2'>{error || errors}</h1>}
+            {error || errors && <h1 className='w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2'>{error}</h1>}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
