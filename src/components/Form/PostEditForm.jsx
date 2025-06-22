@@ -108,7 +108,6 @@ function PostEditForm({ post }) {
                             try {
                                 const addedPost = await databaseService.createPost({ ...data, userId: userData?.$id || userData?.userData.$id, imageId: imgID });
                                 if (addedPost) {
-                                    console.log("this is what create post returns from database",addedPost)
                                     navigate(`/post/${addedPost.$id}`);
                                 }
                             } catch (error) {

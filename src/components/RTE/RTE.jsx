@@ -44,7 +44,8 @@ function RTE({ name, control, label, defaultValue = "" }) {
                             },
                             content_style: `
                                 body {
-                                background-color: #ffffff;
+                                border: 1px solid black;
+                                background-color: #f0f0f0;
                                 color: #000000;
                                 font-family: Helvetica, Arial, sans-serif;
                                 padding: 1rem;
@@ -52,7 +53,7 @@ function RTE({ name, control, label, defaultValue = "" }) {
                                 a { color: #fca311; }
                                 h1, h2, h3, h4, h5, h6 { color: #14213d; }
                                 strong { color: #000000; }
-                                em { color: #fca311; }
+                                em { color: #000000; }
                                 `,
                         }}
                         onEditorChange={onChange}

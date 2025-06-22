@@ -15,8 +15,6 @@ function Post() {
     const [ errorMsg, setErrorMsg ] = useState("");
     const [isAuthor, setIsAuthor] = useState(false);
 
-    console.log(userData);
-
     // to check if its author or not
 
 
