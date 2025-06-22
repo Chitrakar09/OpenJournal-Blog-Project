@@ -11,6 +11,7 @@ function AllPost() {
   const userData = useSelector((state) => state.Auth.userData);
 
   useEffect(() => {
+
     // If userData is undefined, we're still loading auth
     if (userData === undefined) {
       setLoading(true);
@@ -41,6 +42,7 @@ function AllPost() {
           setPosts([]);
           return;
         }
+
         const allPosts = await databaseService.getAllPost(userId);
         setPosts(allPosts?.documents || []);
       } catch (error) {

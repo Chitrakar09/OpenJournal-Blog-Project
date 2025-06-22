@@ -1,4 +1,5 @@
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from './features/auth/authSlice';
 import { useEffect, useState } from 'react';
 import authService from './appwrite/auth';
@@ -15,7 +16,6 @@ function App() {
     const checkAuth = async () => {
       try {
         const userData=await authService.getUser();
-
           if (userData) {
             dispatch(login({ userData }));
             setLoading(false);
@@ -25,7 +25,6 @@ function App() {
           }
 
       } catch (error) {
-
         dispatch(logout());
       }
   }

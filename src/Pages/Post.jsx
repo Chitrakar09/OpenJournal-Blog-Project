@@ -14,6 +14,9 @@ function Post() {
     const [ url, setUrl ] = useState(null);
     const [ errorMsg, setErrorMsg ] = useState("");
     const [isAuthor, setIsAuthor] = useState(false);
+
+    console.log(userData);
+
     // to check if its author or not
 
 
@@ -27,6 +30,7 @@ function Post() {
             databaseService.getPost(postId).then((post) => {
                 if (post) {
                     setPost(post);
+                    
                     setLoading(false);
                 }
                 // else navigate("/allPost");

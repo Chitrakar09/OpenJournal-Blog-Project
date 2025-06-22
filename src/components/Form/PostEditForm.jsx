@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect,} from 'react'
 import { useSelector } from 'react-redux'
 import databaseService from '../../appwrite/databaseConfig'
 import { useForm } from 'react-hook-form'
@@ -14,21 +13,14 @@ function PostEditForm({ post }) {
     const [ id, setId ] = useState(null);
     const navigate = useNavigate();
     const userData = useSelector((state) => state.Auth.userData);
-    const {
-      register,
-      handleSubmit,
-      watch,
-      control,
-      getValues,
-      formState: { errors }
-    } = useForm({
-      defaultValues: {
-        title: post?.title || '',
-        id: post?.$id || '',
-        content: post?.content || '',
-        status: post?.status || 'active',
-        image: post?.imageId || null
-      }
+    const { register, handleSubmit, watch, control, getValues } = useForm({
+        defaultValues: {
+            title: post?.title || '',
+            id: post?.$id || '',
+            content: post?.content || '',
+            status: post?.status || 'active',
+            image: post?.imageId || null
+        },
     });
     const watchedImage = watch("image");
 
@@ -44,8 +36,10 @@ function PostEditForm({ post }) {
             if (post.$id) setId(post.$id);
 
             if (post.imageId) {
+                const getImg = async () => {
                     try {
                         const url = databaseService.getFilePreview(post.imageId);
+                        setImageUrl(url);
                     } catch (error) {
                         setError("Failed to load image.", error);
                         // If there's an error fetching the image, set imageUrl to null
@@ -58,7 +52,7 @@ function PostEditForm({ post }) {
             else {
                 setImageUrl(null)
             }
-        
+        }
 
     }, [ post, previewUrl ])
 
@@ -114,6 +108,8 @@ function PostEditForm({ post }) {
                             try {
                                 const addedPost = await databaseService.createPost({ ...data, userId: userData?.$id || userData?.userData.$id, imageId: imgID });
                                 if (addedPost) {
+                                    console.log("this is what create post returns from database",addedPost)
+                                    navigate(`/post/${addedPost.$id}`);
                                 }
                             } catch (error) {
                                 setError(error?.message || String(error));
@@ -124,6 +120,7 @@ function PostEditForm({ post }) {
                     } catch (error) {
                         setError(error?.message || String(error));
                         return;
+
                     }
 
 
@@ -132,7 +129,7 @@ function PostEditForm({ post }) {
                 // if no image is uploaded, create post without image
                 else  {
                     // if no image is uploaded, create post without image
-                        try{
+                    try {
                         const addedPost = await databaseService.createPost({ ...data, userId: userData.$id, imageId: null});
                         if (addedPost) {
                             navigate(`/post/${addedPost.$id}`);
@@ -149,7 +146,7 @@ function PostEditForm({ post }) {
             setLoading(false);
         }
     }
-
+    
     // to generate a image url for live preview of the uploaded image
     useEffect(() => {
         if (watchedImage && watchedImage[ 0 ] instanceof File) {
@@ -171,7 +168,7 @@ function PostEditForm({ post }) {
         >
             <h2 className="text-2xl font-bold mb-6 text-center">Create a New Post</h2>
 
-            {error || errors && <h1 className='w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2'>{error}</h1>}
+            {error && <h1 className='w-full text-center text-sm text-red-600 font-medium mb-4 bg-red-100 border border-red-300 rounded px-3 py-2'>{error}</h1>}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
 
@@ -249,7 +246,7 @@ function PostEditForm({ post }) {
                 </Link>
             )}
         </form>
-    )}
-
+    )
+}
 
 export default PostEditForm

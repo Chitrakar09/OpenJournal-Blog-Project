@@ -38,17 +38,17 @@ export class AuthService{ //this is a class
             return error
         }
     }
-    
 
     // method to get user status
     async getUser(){
         try {
             return await this.account.get();
         } catch (error) {
+        }
         // what if account not found? the value is null. Also if there is error in try catch then this automatically returns null value 
         return null;
     }
-    }
+
     //method to logout
     async logout(){
         try {

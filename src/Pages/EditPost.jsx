@@ -20,7 +20,7 @@ function EditPost() {
                         }
                     })
                 } catch (error) {
-                    setError(error);
+                    setError(error?.message || String(error));
                 } finally { setLoading(false) }
             } else {
                 navigate("/allPost");
