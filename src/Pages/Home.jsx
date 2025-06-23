@@ -8,7 +8,7 @@ function Home() {
         {
             name: "instagram",
             icon: faInstagram,
-            link: "https://www.instagram.com/chitrakar_09/9"
+            link: "https://www.instagram.com/chitrakar_09"
         }, {
             name: "facebook",
             icon: faFacebook,

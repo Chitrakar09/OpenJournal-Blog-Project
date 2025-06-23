@@ -207,8 +207,8 @@ Let’s connect:
 - 📫 Email: [chitrakarpratyush@gmail.com](mailto:chitrakarpratyush@gmail.com)
 - 💼 LinkedIn: [@pratyush-chitrakar](https://www.linkedin.com/in/pratyush-chitrakar/)
 - 💻 GitHub: [@Chitrakar09](https://github.com/Chitrakar09)
-- 📸 Instagram: [@chitrakar_09](https://instagram.com/your_instagram)
-- 📘 Facebook: [@Chitrakar Piyush](https://facebook.com/your_facebook)
+- 📸 Instagram: [@chitrakar_09](https://www.instagram.com/chitrakar_09)
+- 📘 Facebook: [@Chitrakar Piyush](https://www.facebook.com/chitrakar09)
 
 ---
 
